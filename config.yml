@@ -1,7 +1,6 @@
 baseURL: "https://enhephotographs.netlify.app/"
 languageCode: "zh-CN"
 title: "旅途"
-theme: ""
 
 params:
   hero_title: "路过每一处光与影"
