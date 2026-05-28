@@ -1,0 +1,31 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: uploads
+public_folder: /uploads
+
+collections:
+  - name: blog
+    label: 旅行日记
+    folder: blog
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 日期, name: date, widget: datetime }
+      - { label: 地点, name: location, widget: string }
+      - { label: 封面图片, name: cover, widget: image }
+      - { label: 摘要, name: excerpt, widget: text }
+      - { label: 正文, name: body, widget: markdown }
+
+  - name: settings
+    label: 网站设置
+    files:
+      - label: 主页
+        name: home
+        file: _data/home.yml
+        fields:
+          - { label: 封面标题, name: hero_title, widget: string }
+          - { label: 封面描述, name: hero_desc, widget: text }
+          - { label: 封面图片, name: hero_image, widget: image }
