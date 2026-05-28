@@ -25,7 +25,7 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: 名称/标题, name: title, widget: string }
+      - { label: 标题, name: title, widget: string }
       - { label: 拍摄地点, name: location, widget: string }
       - { label: 日期, name: date, widget: datetime }
       - label: 照片组
@@ -49,11 +49,24 @@ collections:
         name: shoot
         file: _data/shoot.yml
         fields:
-          - { label: 简介, name: intro, widget: text }
+          - { label: 简介文字, name: intro, widget: text }
           - label: 拍摄类型
             name: types
             widget: list
             fields:
-              - { label: 图标, name: icon, widget: string }
+              - { label: 表情符号, name: icon, widget: string }
               - { label: 标题, name: title, widget: string }
               - { label: 描述, name: desc, widget: text }
+      - label: 合作版块
+        name: collab
+        file: _data/collab.yml
+        fields:
+          - label: 合作卡片
+            name: cards
+            widget: list
+            fields:
+              - { label: 表情符号, name: icon, widget: string }
+              - { label: 标题, name: title, widget: string }
+              - { label: 描述, name: desc, widget: text }
+          - { label: 联系标题, name: contact_title, widget: string }
+          - { label: 联系副标题, name: contact_desc, widget: string }
