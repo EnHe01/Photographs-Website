@@ -1,0 +1,14 @@
+baseURL: "https://enhephotographs.netlify.app/"
+languageCode: "zh-CN"
+title: "旅途"
+theme: ""
+
+params:
+  hero_title: "路过每一处光与影"
+  hero_desc: "用镜头记录那些短暂停留的时刻，文字只是光影之外留下的痕迹。"
+  hero_image: ""
+
+outputs:
+  home:
+    - HTML
+    - JSON
