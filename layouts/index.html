@@ -39,6 +39,7 @@ body::before {
   background-size: 180px 180px;
 }
 
+/* NAV */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -104,138 +105,132 @@ nav {
 
 .nav-links a:hover, .nav-links a.active { color: var(--white); }
 .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+
+/* HERO */
 .hero {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 7rem 3rem 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
   position: relative;
   z-index: 1;
+  padding: 0 3rem;
 }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60vw; height: 60vh;
-  background: radial-gradient(ellipse, rgba(255,255,255,0.022) 0%, transparent 70%);
-  pointer-events: none;
+.hero-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 3rem;
+  padding-top: 8rem;
 }
 
-.hero-inner { display: flex; align-items: center; gap: 5rem; flex: 1; }
-.avatar-wrap { flex-shrink: 0; position: relative; }
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.2s forwards;
+}
 
-.avatar {
-  width: 170px; height: 170px;
+.hero-avatar {
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--white-dim);
-  position: relative;
-  z-index: 1;
-  opacity: 0;
-  animation: fadeUp 1s 0.3s forwards;
+  flex-shrink: 0;
 }
 
-.avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%); transition: filter 0.6s; }
-.avatar:hover img { filter: grayscale(0%); }
-
-.avatar-ring {
-  position: absolute;
-  top: -20px; left: -20px;
-  width: 210px; height: 210px;
-  opacity: 0;
-  animation: spin 20s linear infinite, fadeIn 1s 0.6s forwards;
+.hero-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(10%);
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeIn { to { opacity: 1; } }
-
-.hero-text { flex: 1; }
-
-.hero-eyebrow {
-  font-size: 0.62rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--white-dim);
-  margin-bottom: 1.2rem;
-  opacity: 0;
-  animation: fadeUp 1s 0.3s forwards;
+.hero-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--white-mid);
+  text-align: right;
+  line-height: 1.8;
 }
 
 .hero-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(4.5rem, 9vw, 10rem);
+  font-size: clamp(6rem, 14vw, 16rem);
   font-weight: 300;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  animation: fadeUp 1.2s 0.35s forwards;
   margin-bottom: 2.5rem;
-  opacity: 0;
-  animation: fadeUp 1.2s 0.45s forwards;
 }
 
-.hero-name em { font-style: italic; color: var(--white-mid); }
+.hero-name em {
+  font-style: italic;
+  color: rgba(237,234,227,0.28);
+}
 
-.hero-info {
+.hero-info-row {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  justify-content: space-between;
+  align-items: flex-end;
   opacity: 0;
-  animation: fadeUp 1s 0.65s forwards;
+  animation: fadeUp 1s 0.55s forwards;
 }
 
-.hero-info-line { width: 24px; height: 1px; background: var(--white-dim); flex-shrink: 0; }
-.hero-info-text { font-size: 0.85rem; line-height: 1.8; color: var(--white-mid); letter-spacing: 0.04em; }
+.hero-desc {
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: var(--white-mid);
+  letter-spacing: 0.04em;
+  max-width: 28ch;
+}
 
 .hero-tags {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: fadeUp 1s 0.8s forwards;
+  gap: 0.4rem;
 }
 
 .hero-tag {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--white-dim);
   border: 1px solid var(--white-dimmer);
-  padding: 0.28rem 0.75rem;
+  padding: 0.25rem 0.7rem;
 }
 
-.hero-bottom {
-  position: relative;
-  z-index: 1;
-  margin-top: 4rem;
-  padding: 1.4rem 0;
+.hero-bar {
+  padding: 1.3rem 0;
+  border-top: 1px solid var(--white-dimmer);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid var(--white-dimmer);
   opacity: 0;
-  animation: fadeUp 1s 1s forwards;
+  animation: fadeUp 1s 0.75s forwards;
 }
 
 .hero-scroll {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  font-size: 0.6rem;
+  gap: 0.7rem;
+  font-size: 0.58rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--white-dim);
 }
 
-.scroll-line { width: 26px; height: 1px; background: var(--white-dim); }
-.hero-coord { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--white-dim); }
+.scroll-line { width: 24px; height: 1px; background: var(--white-dim); }
+.hero-coord { font-size: 0.58rem; letter-spacing: 0.18em; color: var(--white-dim); }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* JOURNAL */
 .journal-section {
   background: var(--bg);
   padding: 8rem 3rem;
@@ -363,6 +358,8 @@ nav {
 .post-card-date { font-size: 0.6rem; color: var(--white-dim); }
 .post-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; line-height: 1.35; transition: color 0.25s; }
 .post-card:hover .post-card-title { color: var(--white-mid); }
+
+/* GALLERY */
 .gallery-section {
   background: var(--bg);
   border-top: 1px solid var(--white-dimmer);
@@ -427,7 +424,6 @@ nav {
   height: 100%;
   width: auto;
   display: block;
-  object-fit: cover;
   filter: brightness(0.85);
   transition: filter 0.5s;
   pointer-events: none;
@@ -448,6 +444,7 @@ nav {
 .gallery-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
 .gallery-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
 
+/* COLLAB */
 .collab-section {
   background: var(--bg2);
   border-top: 1px solid var(--white-dimmer);
@@ -505,6 +502,7 @@ nav {
 .collab-img:hover img { transform: scale(1.04); filter: brightness(0.8); }
 .collab-img:first-child { margin-top: 3rem; }
 
+/* FOOTER */
 footer {
   background: var(--bg);
   border-top: 1px solid var(--white-dimmer);
@@ -527,11 +525,11 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
 @media (max-width: 768px) {
   nav { padding: 1.2rem 1.5rem; }
   .nav-links { gap: 1.5rem; }
-  .hero { padding: 6rem 1.5rem 0; }
-  .hero-inner { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
-  .avatar { width: 120px; height: 120px; }
-  .avatar-ring { width: 156px; height: 156px; top: -18px; left: -18px; }
-  .hero-name { font-size: clamp(3.5rem, 15vw, 6rem); }
+  .hero { padding: 0 1.5rem; }
+  .hero-name { font-size: clamp(4rem, 16vw, 7rem); }
+  .hero-top { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .hero-tagline { text-align: left; }
+  .hero-info-row { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
   .journal-section { padding: 5rem 1.5rem; }
   .featured-post { grid-template-columns: 1fr; }
   .posts-grid { grid-template-columns: 1fr; }
@@ -546,7 +544,8 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </style>
 </head>
 <body>
-  <nav>
+
+<nav>
   <a href="/" class="nav-logo">
     <span class="nav-logo-name">EnHe</span>
     <span class="nav-logo-sub">Notes from the Road</span>
@@ -559,31 +558,21 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </nav>
 
 <section class="hero">
-  <div class="hero-inner">
-    <div class="avatar-wrap">
-      <div class="avatar">
+  <div class="hero-main">
+    <div class="hero-top">
+      <div class="hero-avatar">
         <img src="/uploads/avatar.jpg" alt="EnHe">
       </div>
-      <svg class="avatar-ring" viewBox="0 0 210 210">
-        <defs>
-          <path id="circle" d="M 105,105 m -77,0 a 77,77 0 1,1 154,0 a 77,77 0 1,1 -154,0"/>
-        </defs>
-        <text font-size="10" fill="rgba(237,234,227,0.22)" font-family="Inter" letter-spacing="3.5" font-weight="300">
-          <textPath href="#circle">
-            PHOTOGRAPHER · WRITER · TOKYO · BEIJING · PHOTOGRAPHER · WRITER ·
-          </textPath>
-        </text>
-      </svg>
+      <div class="hero-tagline">
+        Based in Tokyo · Beijing<br>
+        Photographer · Writer
+      </div>
     </div>
-    <div class="hero-text">
-      <p class="hero-eyebrow">Notes from the Road</p>
-      <h1 class="hero-name">En<em>He</em></h1>
-      <div class="hero-info">
-        <div class="hero-info-line"></div>
-        <div class="hero-info-text">
-          Based in Tokyo · Beijing<br>
-          Photographer · Writer
-        </div>
+    <h1 class="hero-name">En<em>He</em></h1>
+    <div class="hero-info-row">
+      <div class="hero-desc">
+        Documenting the world one frame at a time.<br>
+        Travel, portrait, and the quiet moments in between.
       </div>
       <div class="hero-tags">
         <span class="hero-tag">Travel</span>
@@ -592,7 +581,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
       </div>
     </div>
   </div>
-  <div class="hero-bottom">
+  <div class="hero-bar">
     <div class="hero-scroll"><div class="scroll-line"></div>Scroll</div>
     <div class="hero-coord">35.6762° N, 139.6503° E</div>
   </div>
@@ -645,6 +634,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   {{ end }}
 </section>
+
 <section class="gallery-section" id="gallery">
   <div class="gallery-header">
     <div>
