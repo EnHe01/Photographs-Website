@@ -10,7 +10,7 @@ collections:
     label: 旅行日记
     folder: content/blog
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{uuid}}"
     fields:
       - { label: 标题, name: title, widget: string }
       - { label: 日期, name: date, widget: datetime }
