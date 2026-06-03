@@ -181,7 +181,7 @@
     </div>
   </div>
   <div class="journal-grid">
- {{ range first 3 (where .Site.RegularPages "Section" "blog") }}
+ {{ range first 3 .Site.RegularPages }}
     <div class="journal-card">
       <div class="journal-card-image">
         <img src="{{ .Params.cover }}" alt="{{ .Title }}">
@@ -298,7 +298,9 @@
   }, { threshold: 0.4 });
   sections.forEach(s => spyObserver.observe(s));
   document.querySelectorAll('.photo-card, .journal-card').forEach(el => {
-    el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    // el.style.opacity = '0';
+// el.style.transform = 'translateY(30px)';
+// el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
   });
   new IntersectionObserver((entries, obs) => {
     entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }, i*80); obs.unobserve(e.target); } });

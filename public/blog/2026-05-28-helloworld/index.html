@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helloworld · 旅途</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg: #0e0e0c; --surface: #161614; --gold: #d4a853; --gold-light: #e8c97a; --white: #f0ece4; --muted: #7a7570; }
+  body { background: var(--bg); color: var(--white); font-family: 'Noto Serif SC', serif; font-weight: 300; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.8rem 3.5rem; background: linear-gradient(to bottom, rgba(14,14,12,0.95), transparent); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); text-decoration: none; }
+  .nav-back { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(240,236,228,0.6); text-decoration: none; transition: color 0.3s; }
+  .nav-back::before { content: '←'; }
+  .nav-back:hover { color: var(--gold); }
+  .post-hero { position: relative; height: 75vh; overflow: hidden; }
+  .post-hero img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5); }
+  .post-hero-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 3.5rem 4rem; }
+  .post-tag { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(212,168,83,0.5); padding: 0.2rem 0.7rem; display: inline-block; margin-bottom: 1rem; }
+  .post-date { font-size: 0.78rem; letter-spacing: 0.15em; color: rgba(240,236,228,0.5); margin-bottom: 1rem; }
+  .post-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.15; }
+  .post-body { max-width: 720px; margin: 0 auto; padding: 5rem 2rem 7rem; }
+  .post-body p { font-size: 1rem; line-height: 2.2; color: rgba(240,236,228,0.75); margin-bottom: 2rem; }
+  .post-body img { width: 100%; margin: 2rem 0; }
+  .post-body h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold-light); margin: 3rem 0 1rem; }
+  .post-body blockquote { border-left: 3px solid var(--gold); padding: 1.5rem 2rem; margin: 2rem 0; background: rgba(212,168,83,0.04); font-style: italic; color: var(--gold-light); font-size: 1.2rem; }
+  footer { background: var(--bg); border-top: 1px solid rgba(212,168,83,0.1); padding: 2.5rem 3.5rem; display: flex; justify-content: space-between; }
+  footer p { font-size: 0.78rem; color: var(--muted); }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">旅途</a>
+  <a href="/#journal" class="nav-back">返回日记</a>
+</nav>
+
+<section class="post-hero">
+  <img src="/uploads/dscf4987.jpeg" alt="Helloworld">
+  <div class="post-hero-content">
+    <span class="post-tag">School</span>
+    <p class="post-date">2026 · 05 · 28</p>
+    <h1 class="post-title">Helloworld</h1>
+  </div>
+</section>
+
+<article class="post-body">
+  <p>Luv u</p>
+
+</article>
+
+<footer>
+  <p>© 2025 旅途 · 用影像记录世界</p>
+  <span class="footer-logo">旅途</span>
+  <p>以照片为语言，以旅行为诗</p>
+</footer>
+
+</body>
+</html>
