@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Shoot — EnHe</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg: #0f0e0c; --bg2: #141412; --white: #edeae3; --white-mid: rgba(237,234,227,0.5); --white-dim: rgba(237,234,227,0.18); --white-dimmer: rgba(237,234,227,0.07); }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; min-height: 100vh; }
+body::before { content: ''; position: fixed; inset: 0; z-index: 0; opacity: 0.045; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 180px; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.6rem 3rem; background: rgba(15,14,12,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--white-dimmer); }
+.nav-logo { display: flex; flex-direction: column; gap: 0.1rem; text-decoration: none; }
+.nav-logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; letter-spacing: 0.06em; color: var(--white); line-height: 1; }
+.nav-logo-sub { font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); }
+.nav-back { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.25s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-back::before { content: '←'; }
+.nav-back:hover { color: var(--white); }
+
+.main { position: relative; z-index: 1; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+
+.main-left { padding: 10rem 4rem 5rem; border-right: 1px solid var(--white-dimmer); display: flex; flex-direction: column; justify-content: center; }
+.main-left .eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.main-left .eyebrow-line { width: 24px; height: 1px; background: var(--white-dim); }
+.main-left .eyebrow-text { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--white-dim); }
+.main-left h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+.main-left h1 em { font-style: italic; color: var(--white-mid); }
+.main-left p { font-size: 0.88rem; line-height: 1.9; color: var(--white-mid); margin-bottom: 2.5rem; }
+.info-list { display: flex; flex-direction: column; gap: 0; }
+.info-item { padding: 1rem 0; border-top: 1px solid var(--white-dimmer); font-size: 0.8rem; color: var(--white-mid); line-height: 1.7; }
+.info-item:last-child { border-bottom: 1px solid var(--white-dimmer); }
+.info-item strong { color: var(--white); font-weight: 400; display: block; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.2rem; }
+
+.main-right { padding: 10rem 4rem 5rem; }
+.main-right h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; margin-bottom: 3rem; }
+
+form { display: flex; flex-direction: column; gap: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.form-group { display: flex; flex-direction: column; margin-bottom: 2px; }
+.form-group label { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); padding: 0.8rem 1.2rem 0.4rem; background: var(--bg2); }
+.form-group input,
+.form-group select,
+.form-group textarea { background: var(--bg2); border: none; border-bottom: 1px solid var(--white-dimmer); padding: 0.5rem 1.2rem 1rem; color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 300; outline: none; transition: border-color 0.25s; width: 100%; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-bottom-color: var(--white-mid); }
+.form-group select { cursor: pointer; appearance: none; -webkit-appearance: none; }
+.form-group select option { background: var(--bg2); }
+.form-group textarea { resize: none; min-height: 120px; }
+
+.form-submit { margin-top: 2px; }
+.form-submit button { width: 100%; padding: 1.2rem; background: var(--white); color: var(--bg); font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; border: none; cursor: pointer; transition: background 0.3s, color 0.3s; }
+.form-submit button:hover { background: rgba(237,234,227,0.85); }
+
+.success-msg { display: none; text-align: center; padding: 4rem 2rem; }
+.success-msg h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; margin-bottom: 1rem; }
+.success-msg p { font-size: 0.88rem; color: var(--white-mid); line-height: 1.8; }
+
+footer { border-top: 1px solid var(--white-dimmer); padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+.footer-left { display: flex; flex-direction: column; gap: 0.2rem; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--white); }
+.footer-sub { font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); }
+footer p { font-size: 0.62rem; color: var(--white-dim); }
+
+@media (max-width: 768px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .main { grid-template-columns: 1fr; }
+  .main-left { padding: 7rem 1.5rem 3rem; border-right: none; border-bottom: 1px solid var(--white-dimmer); }
+  .main-right { padding: 3rem 1.5rem 5rem; }
+  .form-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <span class="nav-logo-name">EnHe</span>
+    <span class="nav-logo-sub">Notes from the Road</span>
+  </a>
+  <a href="/" class="nav-back">Back</a>
+</nav>
+
+<div class="main">
+  <div class="main-left">
+    <div class="eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Booking</span>
+    </div>
+    <h1>Let's shoot<br><em>together</em></h1>
+    <p>Fill out the form and I'll get back to you within 2 days. Looking forward to creating something together.</p>
+    <div class="info-list">
+      <div class="info-item">
+        <strong>Location</strong>
+        Tokyo · Kyoto · Available across Japan
+      </div>
+      <div class="info-item">
+        <strong>Sessions</strong>
+        Travel · Portrait · Couple · Solo
+      </div>
+      <div class="info-item">
+        <strong>Response time</strong>
+        Within 2 days
+      </div>
+      <div class="info-item">
+        <strong>Contact</strong>
+        Instagram · RedNote
+      </div>
+    </div>
+  </div>
+
+  <div class="main-right">
+    <h2>Booking Inquiry</h2>
+    <form name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="bookingForm">
+      <input type="hidden" name="form-name" value="booking">
+      <p style="display:none;"><input name="bot-field"></p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Name *</label>
+          <input type="text" id="name" name="name" required placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required placeholder="your@email.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="contact">WeChat / WhatsApp / Instagram</label>
+        <input type="text" id="contact" name="contact" placeholder="Preferred contact method + ID">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Shoot Date *</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="type">Session Type *</label>
+          <select id="type" name="type" required>
+            <option value="" disabled selected>Select a type</option>
+            <option value="travel">Travel Shoot</option>
+            <option value="portrait">Portrait</option>
+            <option value="couple">Couple</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Shoot Location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. Tokyo, Kyoto, Flexible">
+      </div>
+
+      <div class="form-group">
+        <label for="message">Tell me about your shoot *</label>
+        <textarea id="message" name="message" required placeholder="What are you looking for? Any specific ideas, styles, or references?"></textarea>
+      </div>
+
+      <div class="form-submit">
+        <button type="submit">Send Inquiry →</button>
+      </div>
+    </form>
+
+    <div class="success-msg" id="successMsg">
+      <h3>Thank you!</h3>
+      <p>Your inquiry has been received.<br>I'll get back to you within 2 days.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">
+    <span class="footer-logo">EnHe</span>
+    <span class="footer-sub">Notes from the Road</span>
+  </div>
+  <p>© 2025 · Tokyo · Beijing</p>
+</footer>
+
+<script>
+const form = document.getElementById('bookingForm');
+const success = document.getElementById('successMsg');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = new FormData(form);
+  try {
+    await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() });
+    form.style.display = 'none';
+    success.style.display = 'block';
+  } catch(err) {
+    alert('Something went wrong. Please try again.');
+  }
+});
+</script>
+
+</body>
+</html>
