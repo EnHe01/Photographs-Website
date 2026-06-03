@@ -17,56 +17,14 @@ collections:
       - { label: 地点标签, name: location, widget: string }
       - { label: 封面图片, name: cover, widget: image }
       - { label: 摘要, name: excerpt, widget: text }
-      - { label: 正文, name: body, widget: markdown }
-
-  - name: portrait
-    label: 约拍作品
-    folder: portraits
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: 标题, name: title, widget: string }
-      - { label: 拍摄地点, name: location, widget: string }
-      - { label: 日期, name: date, widget: datetime }
-      - label: 照片组
-        name: photos
-        widget: list
-        fields:
-          - { label: 图片, name: image, widget: image }
-          - { label: 说明, name: caption, widget: string, required: false }
+      - { label: 正文, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list], editorComponents: [] }
 
   - name: settings
     label: 网站设置
     files:
-      - label: 主页
-        name: home
-        file: _data/home.yml
-        fields:
-          - { label: 封面标题, name: hero_title, widget: string }
-          - { label: 封面描述, name: hero_desc, widget: text }
-          - { label: 封面图片, name: hero_image, widget: image }
-      - label: 约拍介绍
-        name: shoot
-        file: _data/shoot.yml
-        fields:
-          - { label: 简介文字, name: intro, widget: text }
-          - label: 拍摄类型
-            name: types
-            widget: list
-            fields:
-              - { label: 表情符号, name: icon, widget: string }
-              - { label: 标题, name: title, widget: string }
-              - { label: 描述, name: desc, widget: text }
       - label: 合作版块
         name: collab
         file: _data/collab.yml
         fields:
-          - label: 合作卡片
-            name: cards
-            widget: list
-            fields:
-              - { label: 表情符号, name: icon, widget: string }
-              - { label: 标题, name: title, widget: string }
-              - { label: 描述, name: desc, widget: text }
-          - { label: 联系标题, name: contact_title, widget: string }
-          - { label: 联系副标题, name: contact_desc, widget: string }
+          - { label: 左边图片, name: image_left, widget: image }
+          - { label: 右边图片, name: image_right, widget: image }
