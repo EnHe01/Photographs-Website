@@ -705,7 +705,6 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank">RedNote</a>
   </div>
 </footer>
-
 <script>
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
@@ -744,7 +743,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
 
     function momentum() {
       if (Math.abs(velX) > 0.5) {
-        track.scrollLeft -= velX;
+        track.scrollLeft += velX;
         velX *= 0.92;
         animFrame = requestAnimationFrame(momentum);
       }
@@ -760,11 +759,11 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
       velX = 0;
     });
 
-    track.addEventListener('mouseleave', () => { 
+    track.addEventListener('mouseleave', () => {
       if (isDown) { isDown = false; requestAnimationFrame(momentum); }
     });
 
-    track.addEventListener('mouseup', () => { 
+    track.addEventListener('mouseup', () => {
       isDown = false;
       requestAnimationFrame(momentum);
     });
@@ -781,15 +780,13 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
       track.scrollLeft = scrollLeft - (x - startX);
     });
 
-    let touchStartX, touchScrollLeft, touchVelX, touchLastX, touchLastTime;
+    let touchStartX, touchScrollLeft, touchVelX = 0, touchLastX, touchLastTime;
 
     track.addEventListener('touchstart', e => {
-      cancelAnimationFrame(animFrame);
       touchStartX = e.touches[0].pageX - track.offsetLeft;
       touchScrollLeft = track.scrollLeft;
       touchLastX = e.touches[0].pageX;
       touchLastTime = Date.now();
-      touchVelX = 0;
     }, { passive: true });
 
     track.addEventListener('touchmove', e => {
@@ -803,10 +800,9 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
     }, { passive: true });
 
     track.addEventListener('touchend', () => {
-      velX = touchVelX;
+      velX = velX * 0.3 + touchVelX;
       requestAnimationFrame(momentum);
     });
   }
 </script>
-</body>
-</html>
+
