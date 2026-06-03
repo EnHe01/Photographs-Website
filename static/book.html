@@ -114,7 +114,8 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
 
   <div class="main-right">
     <h2>Booking Inquiry</h2>
-    <form name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="bookingForm">
+    <form name="booking" netlify method="POST" netlify-honeypot="bot-field" id="bookingForm">
+
       <input type="hidden" name="form-name" value="booking">
       <p style="display:none;"><input name="bot-field"></p>
 
