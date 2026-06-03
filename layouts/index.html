@@ -402,7 +402,7 @@ nav {
   gap: 3px;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-snap-type: x mandatory;
+  
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 0 3rem;
@@ -416,7 +416,7 @@ nav {
 .gallery-item {
   flex-shrink: 0;
   height: 520px;
-  scroll-snap-align: start;
+  
   overflow: hidden;
 }
 
@@ -620,7 +620,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
     {{ range after 1 (first 4 $pages) }}
     <a href="{{ .Permalink }}" class="post-card">
       <div class="post-card-img">
-        <img src="{{ .Params.cover }}" alt="{{ .Title }}">
+        <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
       <div class="post-card-body">
         <div class="post-card-meta">
@@ -649,10 +649,10 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div class="gallery-track-wrap">
     <div class="gallery-track" id="galleryTrack">
-      {{ range where .Site.RegularPages "Section" "portraits" }}
-      {{ range .Params.photos }}
+      {{ range where .Site.RegularPages "Section" "blog" }}
+      {{ if .Params.cover }}
       <div class="gallery-item">
-        <img src="{{ .image }}" alt="{{ .caption }}">
+        <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
       {{ end }}
       {{ end }}
@@ -675,7 +675,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
         <span class="collab-link-arrow">↗</span>
       </a>
       <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank" class="collab-link">
-        <span class="collab-link-name">小红书</span>
+        <span class="collab-link-name">RedNote</span>
         <span class="collab-link-arrow">↗</span>
       </a>
       <a href="#" class="collab-link">
@@ -702,7 +702,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
   <p>© 2025 · Tokyo · Beijing</p>
   <div class="footer-social">
     <a href="https://www.instagram.com/en1he_" target="_blank">Instagram</a>
-    <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank">小红书</a>
+    <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank">RedNote</a>
   </div>
 </footer>
 
@@ -720,30 +720,91 @@ footer p { font-size: 0.62rem; color: var(--white-dim); letter-spacing: 0.1em; }
   }, { threshold: 0.3 });
   sections.forEach(s => observer.observe(s));
 
+  // Lazy load gallery images
+  const lazyImages = document.querySelectorAll('.gallery-item img');
+  const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) { img.src = img.dataset.src; }
+        imageObserver.unobserve(img);
+      }
+    });
+  }, { rootMargin: '400px' });
+  lazyImages.forEach(img => {
+    img.dataset.src = img.src;
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    imageObserver.observe(img);
+  });
+
   const track = document.getElementById('galleryTrack');
   if (track) {
     let isDown = false, startX, scrollLeft;
+    let velX = 0, lastX = 0, lastTime = 0, animFrame;
+
+    function momentum() {
+      if (Math.abs(velX) > 0.5) {
+        track.scrollLeft -= velX;
+        velX *= 0.92;
+        animFrame = requestAnimationFrame(momentum);
+      }
+    }
+
     track.addEventListener('mousedown', e => {
       isDown = true;
+      cancelAnimationFrame(animFrame);
       startX = e.pageX - track.offsetLeft;
       scrollLeft = track.scrollLeft;
+      lastX = e.pageX;
+      lastTime = Date.now();
+      velX = 0;
     });
-    track.addEventListener('mouseleave', () => { isDown = false; });
-    track.addEventListener('mouseup', () => { isDown = false; });
+
+    track.addEventListener('mouseleave', () => { 
+      if (isDown) { isDown = false; requestAnimationFrame(momentum); }
+    });
+
+    track.addEventListener('mouseup', () => { 
+      isDown = false;
+      requestAnimationFrame(momentum);
+    });
+
     track.addEventListener('mousemove', e => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - track.offsetLeft;
-      track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+      const now = Date.now();
+      const dt = now - lastTime;
+      velX = (lastX - e.pageX) / (dt || 1) * 16;
+      lastX = e.pageX;
+      lastTime = now;
+      track.scrollLeft = scrollLeft - (x - startX);
     });
-    let touchStartX, touchScrollLeft;
+
+    let touchStartX, touchScrollLeft, touchVelX, touchLastX, touchLastTime;
+
     track.addEventListener('touchstart', e => {
+      cancelAnimationFrame(animFrame);
       touchStartX = e.touches[0].pageX - track.offsetLeft;
       touchScrollLeft = track.scrollLeft;
-    });
+      touchLastX = e.touches[0].pageX;
+      touchLastTime = Date.now();
+      touchVelX = 0;
+    }, { passive: true });
+
     track.addEventListener('touchmove', e => {
       const x = e.touches[0].pageX - track.offsetLeft;
-      track.scrollLeft = touchScrollLeft - (x - touchStartX) * 1.5;
+      const now = Date.now();
+      const dt = now - touchLastTime;
+      touchVelX = (touchLastX - e.touches[0].pageX) / (dt || 1) * 16;
+      touchLastX = e.touches[0].pageX;
+      touchLastTime = now;
+      track.scrollLeft = touchScrollLeft - (x - touchStartX);
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+      velX = touchVelX;
+      requestAnimationFrame(momentum);
     });
   }
 </script>
