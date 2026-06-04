@@ -210,6 +210,14 @@ function filterPosts() {
   });
   document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
 }
+// 读取 URL 参数自动筛选
+const urlParams = new URLSearchParams(window.location.search);
+const urlTag = urlParams.get('tag');
+if (urlTag) {
+  const btn = [...document.querySelectorAll('.tag-btn')].find(b => b.dataset.tag === decodeURIComponent(urlTag).toLowerCase());
+  if (btn) toggleTag(btn, btn.dataset.tag);
+  else { activeTag = decodeURIComponent(urlTag).toLowerCase(); filterPosts(); }
+}
 </script>
 </body>
 </html>
