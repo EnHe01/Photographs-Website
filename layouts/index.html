@@ -864,7 +864,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     function momentum() {
       if (Math.abs(velX) > 0.5) {
         track.scrollLeft += velX;
-        velX *= 0.96;
+        velX *= 0.92;
         animFrame = requestAnimationFrame(momentum);
       }
     }
