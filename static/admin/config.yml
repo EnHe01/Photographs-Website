@@ -10,15 +10,14 @@ collections:
     label: 旅行日记
     folder: content/blog
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{uuid}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: 标题, name: title, widget: string }
       - { label: 日期, name: date, widget: datetime }
       - { label: 地点标签, name: location, widget: string }
       - { label: 封面图片, name: cover, widget: image }
       - { label: 摘要, name: excerpt, widget: text }
-      - { label: 正文, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list], editorComponents: [] }
-
+      - { label: 正文, name: body, widget: markdown }
   - name: settings
     label: 网站设置
     files:
