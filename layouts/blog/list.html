@@ -119,9 +119,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         <p class="post-item-excerpt">{{ .Params.excerpt }}</p>
         {{ if .Params.location }}
         <div class="post-item-tags">
-          {{ range (split .Params.location ",") }}
-          <span class="post-tag" onclick="filterByTag(event, '{{ . | trim " " | lower }}')">{{ . | trim " " }}</span>
-          {{ end }}
+          {{ range (split .Params.location ",") }}<span class="post-tag" onclick="filterByTag(event, this.textContent.trim().toLowerCase())">{{ . }}</span>{{ end }}
         </div>
         {{ end }}
       </div>
