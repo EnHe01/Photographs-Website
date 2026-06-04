@@ -648,6 +648,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 
   /* POSTS GRID — 2列 */
   .posts-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .mobile-only { display: block; }
   .post-card-title { font-size: 1rem; }
   .post-card-body { padding: 1rem 1rem 1.2rem; }
 
@@ -677,6 +678,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   opacity: 1;
   transform: translateY(0);
 }
+.mobile-only { display: none; }
 </style>
 </head>
 <body>
@@ -753,17 +755,17 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div style="height:2px;"></div>
   <div class="posts-grid reveal">
-    {{ range after 1 (first 5 $pages) }}
-    <a href="{{ .Permalink }}" class="post-card">
+    {{ range $i, $p := after 1 (first 4 $pages) }}
+    <a href="{{ $p.Permalink }}" class="post-card{{ if eq $i 2 }} mobile-only{{ end }}">
       <div class="post-card-img">
-        <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
+        <img src="{{ $p.Params.cover }}" alt="{{ $p.Title }}" loading="lazy">
       </div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-loc">{{ .Params.location }}</span>
-          <span class="post-card-date">{{ .Date.Format "2006.01.02" }}</span>
+          <span class="post-card-loc">{{ $p.Params.location }}</span>
+          <span class="post-card-date">{{ $p.Date.Format "2006.01.02" }}</span>
         </div>
-        <h3 class="post-card-title">{{ .Title }}</h3>
+        <h3 class="post-card-title">{{ $p.Title }}</h3>
       </div>
     </a>
     {{ end }}
