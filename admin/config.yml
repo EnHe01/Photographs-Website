@@ -22,3 +22,4 @@ collections:
         name: body
         widget: markdown
         modes: [rich_text, raw]
+        editor_components: [image]
