@@ -18,3 +18,12 @@ collections:
       - { label: 封面图片, name: cover, widget: image }
       - { label: 摘要, name: excerpt, widget: text }
       - { label: 正文, name: body, widget: markdown }
+  - name: settings
+    label: 网站设置
+    files:
+      - label: 合作版块
+        name: collab
+        file: _data/collab.yml
+        fields:
+          - { label: 左边图片, name: image_left, widget: image }
+          - { label: 右边图片, name: image_right, widget: image }
