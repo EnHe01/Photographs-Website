@@ -17,7 +17,8 @@
   .post-hero { position: relative; height: 75vh; overflow: hidden; }
   .post-hero img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5); }
   .post-hero-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 3.5rem 4rem; }
-  .post-tag { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(212,168,83,0.5); padding: 0.2rem 0.7rem; display: inline-block; margin-bottom: 1rem; }
+  .post-tag { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(212,168,83,0.5); padding: 0.2rem 0.7rem; display: inline-block; margin-right: 0.4rem; margin-bottom: 0.5rem; text-decoration: none; white-space: nowrap; }
+.post-tags { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 1rem; }
   .post-date { font-size: 0.78rem; letter-spacing: 0.15em; color: rgba(240,236,228,0.5); margin-bottom: 1rem; }
   .post-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.15; }
   .post-body { max-width: 720px; margin: 0 auto; padding: 5rem 2rem 7rem; }
@@ -41,15 +42,9 @@
   <img src="{{ .Params.cover }}" alt="{{ .Title }}">
   <div class="post-hero-content">
     {{ if .Params.tags }}
-        {{ $tags := split .Params.location "," }}
-        {{ range $tags }}{{ $t := . | htmlEscape }}
-        <a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>
-        {{ end }}
+        <div class="post-tags">{{ $tags := split .Params.location "," }}{{ range $tags }}{{ $t := . | htmlEscape }}<a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>{{ end }}</div>
         {{ else }}
-        {{ $tags := split .Params.location "," }}
-        {{ range $tags }}{{ $t := . | htmlEscape }}
-        <a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>
-        {{ end }}
+        <div class="post-tags">{{ $tags := split .Params.location "," }}{{ range $tags }}{{ $t := . | htmlEscape }}<a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>{{ end }}</div>
         {{ end }}
     <p class="post-date">{{ .Date.Format "2006 · 01 · 02" }}</p>
     <h1 class="post-title">{{ .Title }}</h1>
