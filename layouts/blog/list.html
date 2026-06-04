@@ -103,7 +103,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
     <a href="{{ .Permalink }}" class="post-item"
        data-title="{{ .Title | lower }}"
        data-location="{{ .Params.location | lower }}"
-       data-tags="{{ .Params.tags | lower }}"
+       data-tags="{{ .Params.location | lower }}"
        data-excerpt="{{ .Params.excerpt | lower }}">
       <div class="post-item-img">
         <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
@@ -115,9 +115,9 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         </div>
         <h2 class="post-item-title">{{ .Title }}</h2>
         <p class="post-item-excerpt">{{ .Params.excerpt }}</p>
-        {{ if .Params.tags }}
+        {{ if .Params.location }}
         <div class="post-item-tags">
-          {{ range (split .Params.tags ",") }}
+          {{ range (split .Params.location ",") }}
           <span class="post-tag" onclick="filterByTag(event, '{{ . | strings.TrimSpace | lower }}')">{{ . | strings.TrimSpace }}</span>
           {{ end }}
         </div>
