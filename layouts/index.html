@@ -753,7 +753,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div style="height:2px;"></div>
   <div class="posts-grid reveal">
-    {{ range after 1 (first 4 $pages) }}
+    {{ range after 1 (first 5 $pages) }}
     <a href="{{ .Permalink }}" class="post-card">
       <div class="post-card-img">
         <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
