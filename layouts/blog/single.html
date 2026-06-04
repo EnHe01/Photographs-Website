@@ -42,11 +42,11 @@
   <div class="post-hero-content">
     {{ if .Params.tags }}
         {{ range (split .Params.tags ",") }}
-        <a href="/blog/?tag={{ . | strings.TrimSpace | urlize }}" class="post-tag">{{ . | strings.TrimSpace }}</a>
+        <a href="/blog/?tag={{ . | trim " " | urlize }}" class="post-tag">{{ . | trim " " }}</a>
         {{ end }}
         {{ else }}
         {{ range (split .Params.location ",") }}
-        <a href="/blog/?tag={{ . | strings.TrimSpace | urlize }}" class="post-tag">{{ . | strings.TrimSpace }}</a>
+        <a href="/blog/?tag={{ . | trim " " | urlize }}" class="post-tag">{{ . | trim " " }}</a>
         {{ end }}
         {{ end }}
     <p class="post-date">{{ .Date.Format "2006 · 01 · 02" }}</p>
