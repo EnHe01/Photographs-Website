@@ -53,10 +53,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; j
 .post-tag { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-dim); border: 1px solid var(--white-dimmer); padding: 0.2rem 0.6rem; cursor: pointer; transition: all 0.2s; }
 .post-tag:hover { color: var(--white); border-color: var(--white-mid); }
 .post-item-arrow { width: 20px; height: 20px; position: relative; flex-shrink: 0; }
-.post-item-arrow::before, .post-item-arrow::after { content: ''; position: absolute; background: var(--white-dim); transition: background 0.3s; }
-.post-item-arrow::before { width: 14px; height: 1px; top: 9px; right: 0; }
-.post-item-arrow::after { width: 1px; height: 14px; top: 3px; right: 0; }
-.post-item:hover .post-item-arrow::before, .post-item:hover .post-item-arrow::after { background: var(--white); }
+.post-item-arrow svg { width: 16px; height: 16px; stroke: var(--white-dim); transition: stroke 0.3s, transform 0.3s; }
+.post-item:hover .post-item-arrow svg { stroke: var(--white); transform: translate(2px, -2px); }
 
 
 .no-results { text-align: center; padding: 5rem 0; color: var(--white-dim); font-size: 0.88rem; letter-spacing: 0.1em; display: none; }
@@ -127,7 +125,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         </div>
         {{ end }}
       </div>
-      <span class="post-item-arrow"></span>
+      <span class="post-item-arrow"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.2"><line x1="2" y1="14" x2="14" y2="2"/><polyline points="6,2 14,2 14,10"/></svg></span>
     </a>
     {{ end }}
   </div>
