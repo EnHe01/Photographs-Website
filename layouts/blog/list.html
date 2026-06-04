@@ -117,11 +117,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         </div>
         <h2 class="post-item-title">{{ .Title }}</h2>
         <p class="post-item-excerpt">{{ .Params.excerpt }}</p>
-        {{ if .Params.location }}
-        <div class="post-item-tags">
-          {{ range (split .Params.location ",") }}<span class="post-tag" onclick="filterByTag(event, this.textContent.trim().toLowerCase())">{{ . }}</span>{{ end }}
-        </div>
-        {{ end }}
+
       </div>
       <span class="post-item-arrow"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.2"><line x1="2" y1="14" x2="14" y2="2"/><polyline points="6,2 14,2 14,10"/></svg></span>
     </a>
