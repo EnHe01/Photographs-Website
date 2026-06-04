@@ -8,5 +8,25 @@
 <body>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.3.3/dist/decap-cms.js"></script>
+  <script>
+    CMS.registerEditorComponent({
+      id: "image",
+      label: "Image",
+      fields: [
+        { name: "src", label: "Image", widget: "image" },
+        { name: "alt", label: "Alt Text", widget: "string", default: "" },
+      ],
+      pattern: /^!\[([^\]]*)\]\(([^)]+)\)$/,
+      fromBlock: function(match) {
+        return { alt: match[1], src: match[2] };
+      },
+      toBlock: function(obj) {
+        return "![" + obj.alt + "](" + obj.src + ")";
+      },
+      toPreview: function(obj) {
+        return '<img src="' + obj.src + '" alt="' + obj.alt + '">';
+      }
+    });
+  </script>
 </body>
 </html>
