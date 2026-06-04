@@ -637,6 +637,16 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   .collab-right { display: none; }
   footer { flex-direction: column; gap: 1.2rem; text-align: center; padding: 2rem 1.5rem; }
 }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 </head>
 <body>
@@ -684,7 +694,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </section>
 
 <section class="journal-section" id="journal">
-  <div class="section-header-row">
+  <div class="section-header-row reveal">
     <div>
       <div class="section-eyebrow">
         <span class="section-num">001</span>
@@ -699,7 +709,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   {{ $pages := where .Site.RegularPages "Section" "blog" }}
   {{ $first := index $pages 0 }}
   {{ if $first }}
-  <div class="featured-post">
+  <div class="featured-post reveal">
     <div class="featured-post-img">
       <img src="{{ $first.Params.cover }}" alt="{{ $first.Title }}">
     </div>
@@ -712,7 +722,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     </div>
   </div>
   <div style="height:2px;"></div>
-  <div class="posts-grid">
+  <div class="posts-grid reveal">
     {{ range after 1 (first 4 $pages) }}
     <a href="{{ .Permalink }}" class="post-card">
       <div class="post-card-img">
@@ -732,7 +742,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </section>
 
 <section class="gallery-section" id="gallery">
-  <div class="gallery-header">
+  <div class="gallery-header reveal">
     <div>
       <div class="section-eyebrow">
         <span class="section-num">002</span>
@@ -743,7 +753,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     </div>
     <span class="gallery-hint">Drag to explore</span>
   </div>
-  <div class="gallery-track-wrap">
+  <div class="gallery-track-wrap reveal">
     <div class="gallery-track" id="galleryTrack">
       {{ range where .Site.RegularPages "Section" "blog" }}
       {{ if .Params.cover }}
@@ -757,7 +767,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </section>
 
 <section class="collab-section" id="collab">
-  <div class="collab-text">
+  <div class="collab-text reveal">
     <div class="section-eyebrow">
       <span class="section-num">003</span>
       <div class="section-line"></div>
@@ -780,7 +790,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       </a>
     </div>
   </div>
-  <div class="collab-right">
+  <div class="collab-right reveal">
     <div class="collab-img">
       <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80" alt="">
     </div>
@@ -900,5 +910,22 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       requestAnimationFrame(momentum);
     });
   }
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // 每次访问回到顶部
+  if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
 </script>
 
