@@ -118,7 +118,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         {{ if .Params.tags }}
         <div class="post-item-tags">
           {{ range (split .Params.tags ",") }}
-          <span class="post-tag" onclick="filterByTag(event, '{{ . | trimSpace | lower }}')">{{ . | trimSpace }}</span>
+          <span class="post-tag" onclick="filterByTag(event, '{{ . | strings.TrimSpace | lower }}')">{{ . | strings.TrimSpace }}</span>
           {{ end }}
         </div>
         {{ end }}
