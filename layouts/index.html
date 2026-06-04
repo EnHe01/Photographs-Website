@@ -762,6 +762,14 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
         <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
       {{ end }}
+      {{ $images := findRE `/uploads/[^)"]+\.(jpg|jpeg|png|webp)` .RawContent }}
+      {{ range $images }}
+      {{ if ne . $.Params.cover }}
+      <div class="gallery-item">
+        <img src="{{ . }}" alt="" loading="lazy">
+      </div>
+      {{ end }}
+      {{ end }}
       {{ end }}
     </div>
   </div>
