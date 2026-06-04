@@ -52,8 +52,12 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; j
 .post-item-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .post-tag { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-dim); border: 1px solid var(--white-dimmer); padding: 0.2rem 0.6rem; cursor: pointer; transition: all 0.2s; }
 .post-tag:hover { color: var(--white); border-color: var(--white-mid); }
-.post-item-arrow { font-size: 1rem; color: var(--white-dim); transition: transform 0.3s, color 0.3s; }
-.post-item:hover .post-item-arrow { transform: translate(4px, -4px); color: var(--white); }
+.post-item-arrow { width: 20px; height: 20px; position: relative; flex-shrink: 0; }
+.post-item-arrow::before, .post-item-arrow::after { content: ''; position: absolute; background: var(--white-dim); transition: background 0.3s; }
+.post-item-arrow::before { width: 14px; height: 1px; top: 9px; right: 0; }
+.post-item-arrow::after { width: 1px; height: 14px; top: 3px; right: 0; }
+.post-item:hover .post-item-arrow::before, .post-item:hover .post-item-arrow::after { background: var(--white); }
+
 
 .no-results { text-align: center; padding: 5rem 0; color: var(--white-dim); font-size: 0.88rem; letter-spacing: 0.1em; display: none; }
 
@@ -123,7 +127,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
         </div>
         {{ end }}
       </div>
-      <span class="post-item-arrow">↗</span>
+      <span class="post-item-arrow"></span>
     </a>
     {{ end }}
   </div>
@@ -151,9 +155,9 @@ document.querySelectorAll('.post-item').forEach(item => {
   }
 });
 
-// 渲染标签按钮
+// 渲染标签按钮（只显示最多5个）
 const tagsFilter = document.getElementById('tagsFilter');
-Object.keys(allTags).sort().forEach(tag => {
+Object.entries(allTags).sort((a,b) => b[1]-a[1]).slice(0,5).forEach(([tag]) => {
   const btn = document.createElement('button');
   btn.className = 'tag-btn';
   btn.textContent = tag;
