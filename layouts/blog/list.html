@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --bg: #0f0e0c; --bg2: #141412; --white: #edeae3; --white-mid: rgba(237,234,227,0.5); --white-dim: rgba(237,234,227,0.18); --white-dimmer: rgba(237,234,227,0.07); }
+:root { --bg: #0f0e0c; --bg2: #1e1c19; --white: #edeae3; --white-mid: rgba(237,234,227,0.85); --white-dim: rgba(237,234,227,0.55); --white-dimmer: rgba(237,234,227,0.10); }
 body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; min-height: 100vh; }
 body::before { content: ''; position: fixed; inset: 0; z-index: 0; opacity: 0.045; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 180px; }
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.6rem 3rem; background: rgba(15,14,12,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--white-dimmer); }
@@ -17,30 +17,61 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; j
 .nav-back { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.25s; display: flex; align-items: center; gap: 0.5rem; }
 .nav-back::before { content: '←'; }
 .nav-back:hover { color: var(--white); }
-.main { padding: 8rem 3rem 6rem; position: relative; z-index: 1; max-width: 1200px; }
+.main { position: relative; z-index: 1; padding: 8rem 3rem 5rem; }
 .page-eyebrow { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0.8rem; }
 .page-num { font-family: 'Cormorant Garamond', serif; font-size: 0.8rem; color: var(--white-dim); letter-spacing: 0.1em; }
 .page-line { width: 28px; height: 1px; background: var(--white-dim); }
 .page-label { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--white-dim); }
-.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; letter-spacing: -0.02em; margin-bottom: 4rem; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 4rem); font-weight: 300; margin-bottom: 3rem; }
+
+/* SEARCH */
+.search-wrap { margin-bottom: 2rem; position: relative; }
+.search-input { width: 100%; background: var(--bg2); border: none; border-bottom: 1px solid var(--white-dimmer); padding: 1rem 1.2rem; color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 300; outline: none; transition: border-color 0.25s; }
+.search-input::placeholder { color: var(--white-dim); }
+.search-input:focus { border-bottom-color: var(--white-mid); }
+.search-icon { position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--white-dim); font-size: 0.8rem; letter-spacing: 0.1em; }
+
+/* TAGS FILTER */
+.tags-filter { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 3rem; }
+.tag-btn { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-dim); border: 1px solid var(--white-dimmer); padding: 0.3rem 0.8rem; background: none; cursor: pointer; transition: all 0.2s; }
+.tag-btn:hover, .tag-btn.active { color: var(--white); border-color: var(--white-mid); background: rgba(237,234,227,0.06); }
+
+/* POSTS */
 .posts-list { display: flex; flex-direction: column; gap: 2px; }
-.post-item { display: grid; grid-template-columns: 280px 1fr auto; align-items: center; gap: 3rem; padding: 2rem 2.5rem; background: var(--bg2); text-decoration: none; color: var(--white); transition: background 0.3s, padding-left 0.3s; }
-.post-item:hover { background: #1a1917; padding-left: 3rem; }
-.post-item-img { aspect-ratio: 3/2; overflow: hidden; }
-.post-item-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75); transition: transform 0.6s ease, filter 0.4s; }
-.post-item:hover .post-item-img img { transform: scale(1.04); filter: brightness(0.9); }
-.post-item-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+.post-item { display: grid; grid-template-columns: 280px 1fr auto; align-items: center; background: var(--bg2); text-decoration: none; color: var(--white); padding: 0 2rem 0 0; transition: background 0.3s, padding-left 0.3s; overflow: hidden; }
+.post-item:hover { background: #1a1917; padding-left: 0.5rem; }
+.post-item-img { aspect-ratio: 3/2; overflow: hidden; flex-shrink: 0; }
+.post-item-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.72); transition: transform 0.8s, filter 0.5s; }
+.post-item:hover .post-item-img img { transform: scale(1.04); filter: brightness(0.55); }
+.post-item-body { padding: 1.8rem 2rem; }
+.post-item-meta { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
 .post-item-loc { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-mid); }
 .post-item-date { font-size: 0.6rem; color: var(--white-dim); }
 .post-item-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; line-height: 1.25; margin-bottom: 0.6rem; }
-.post-item-excerpt { font-size: 0.82rem; line-height: 1.8; color: var(--white-mid); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.post-item-excerpt { font-size: 0.82rem; line-height: 1.8; color: var(--white-mid); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.8rem; }
+.post-item-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.post-tag { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-dim); border: 1px solid var(--white-dimmer); padding: 0.2rem 0.6rem; cursor: pointer; transition: all 0.2s; }
+.post-tag:hover { color: var(--white); border-color: var(--white-mid); }
 .post-item-arrow { font-size: 1rem; color: var(--white-dim); transition: transform 0.3s, color 0.3s; }
 .post-item:hover .post-item-arrow { transform: translate(4px, -4px); color: var(--white); }
+
+.no-results { text-align: center; padding: 5rem 0; color: var(--white-dim); font-size: 0.88rem; letter-spacing: 0.1em; display: none; }
+
 footer { border-top: 1px solid var(--white-dimmer); padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
 .footer-left { display: flex; flex-direction: column; gap: 0.2rem; }
 .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--white); }
 .footer-sub { font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); }
 footer p { font-size: 0.62rem; color: var(--white-dim); }
+
+@media (max-width: 768px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .main { padding: 6rem 1.5rem 4rem; }
+  .post-item { grid-template-columns: 120px 1fr auto; padding: 0 1rem 0 0; }
+  .post-item-body { padding: 1rem 1rem; }
+  .post-item-title { font-size: 1.1rem; }
+  .post-item-excerpt { display: none; }
+  footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+}
 </style>
 </head>
 <body>
@@ -51,6 +82,7 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
   </a>
   <a href="/" class="nav-back">Back</a>
 </nav>
+
 <main class="main">
   <div class="page-eyebrow">
     <span class="page-num">001</span>
@@ -58,25 +90,46 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
     <span class="page-label">Journal</span>
   </div>
   <h1 class="page-title">All Posts</h1>
-  <div class="posts-list">
+
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search posts, locations, tags...">
+    <span class="search-icon">SEARCH</span>
+  </div>
+
+  <div class="tags-filter" id="tagsFilter"></div>
+
+  <div class="posts-list" id="postsList">
     {{ range .Pages }}
-    <a href="{{ .Permalink }}" class="post-item">
+    <a href="{{ .Permalink }}" class="post-item"
+       data-title="{{ .Title | lower }}"
+       data-location="{{ .Params.location | lower }}"
+       data-tags="{{ .Params.tags | lower }}"
+       data-excerpt="{{ .Params.excerpt | lower }}">
       <div class="post-item-img">
-        <img src="{{ .Params.cover }}" alt="{{ .Title }}">
+        <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
-      <div>
+      <div class="post-item-body">
         <div class="post-item-meta">
           <span class="post-item-loc">{{ .Params.location }}</span>
           <span class="post-item-date">{{ .Date.Format "2006.01.02" }}</span>
         </div>
         <h2 class="post-item-title">{{ .Title }}</h2>
         <p class="post-item-excerpt">{{ .Params.excerpt }}</p>
+        {{ if .Params.tags }}
+        <div class="post-item-tags">
+          {{ range (split .Params.tags ",") }}
+          <span class="post-tag" onclick="filterByTag(event, '{{ . | trimSpace | lower }}')">{{ . | trimSpace }}</span>
+          {{ end }}
+        </div>
+        {{ end }}
       </div>
       <span class="post-item-arrow">↗</span>
     </a>
     {{ end }}
   </div>
+  <div class="no-results" id="noResults">No posts found.</div>
 </main>
+
 <footer>
   <div class="footer-left">
     <span class="footer-logo">EnHe</span>
@@ -84,5 +137,79 @@ footer p { font-size: 0.62rem; color: var(--white-dim); }
   </div>
   <p>© 2025 · Tokyo · Beijing</p>
 </footer>
+
+<script>
+// 收集所有标签
+const allTags = {};
+document.querySelectorAll('.post-item').forEach(item => {
+  const tags = item.dataset.tags;
+  if (tags) {
+    tags.split(',').forEach(t => {
+      const tag = t.trim();
+      if (tag) allTags[tag] = (allTags[tag] || 0) + 1;
+    });
+  }
+});
+
+// 渲染标签按钮
+const tagsFilter = document.getElementById('tagsFilter');
+Object.keys(allTags).sort().forEach(tag => {
+  const btn = document.createElement('button');
+  btn.className = 'tag-btn';
+  btn.textContent = tag;
+  btn.dataset.tag = tag;
+  btn.onclick = () => toggleTag(btn, tag);
+  tagsFilter.appendChild(btn);
+});
+
+let activeTag = null;
+let searchQuery = '';
+
+function toggleTag(btn, tag) {
+  if (activeTag === tag) {
+    activeTag = null;
+    btn.classList.remove('active');
+  } else {
+    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+    activeTag = tag;
+    btn.classList.add('active');
+  }
+  filterPosts();
+}
+
+function filterByTag(e, tag) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.getElementById('searchInput').value = '';
+  searchQuery = '';
+  const btn = [...document.querySelectorAll('.tag-btn')].find(b => b.dataset.tag === tag);
+  if (btn) toggleTag(btn, tag);
+  else { activeTag = tag; filterPosts(); }
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  activeTag = null;
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+  filterPosts();
+});
+
+function filterPosts() {
+  const items = document.querySelectorAll('.post-item');
+  let visible = 0;
+  items.forEach(item => {
+    const matchSearch = !searchQuery ||
+      item.dataset.title.includes(searchQuery) ||
+      item.dataset.location.includes(searchQuery) ||
+      item.dataset.tags.includes(searchQuery) ||
+      item.dataset.excerpt.includes(searchQuery);
+    const matchTag = !activeTag || item.dataset.tags.includes(activeTag);
+    const show = matchSearch && matchTag;
+    item.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+</script>
 </body>
 </html>
