@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: uploads
+media_folder: static/uploads
 public_folder: /uploads
 
 collections:
@@ -17,7 +17,7 @@ collections:
       - { label: 地点标签, name: location, widget: string }
       - { label: 封面图片, name: cover, widget: image }
       - { label: 摘要, name: excerpt, widget: text }
-      - { label: 正文, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list, image], editorComponents: [image] }
+      - { label: 正文, name: body, widget: markdown, editor_components: [image] }
 
   - name: portrait
     label: 约拍作品
