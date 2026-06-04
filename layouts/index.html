@@ -634,7 +634,8 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   .gallery-track { padding: 0 1.5rem; }
   .gallery-item { height: 320px; }
   .collab-section { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
-  .collab-right { display: none; }
+  .collab-right { grid-template-columns: 1fr; }
+  .collab-img:first-child { margin-top: 0; }
   footer { flex-direction: column; gap: 1.2rem; text-align: center; padding: 2rem 1.5rem; }
 }
 
@@ -926,6 +927,6 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   if (history.scrollRestoration) {
     history.scrollRestoration = 'manual';
   }
-  window.scrollTo(0, 0);
+  window.scrollTo({top: 0, left: 0, behavior: "instant"});
 </script>
 
