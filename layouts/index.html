@@ -437,6 +437,7 @@ nav {
   text-decoration: none;
   color: var(--white);
   display: block;
+  max-height: 420px;
 }
 
 .post-card-img { aspect-ratio: 3/2; overflow: hidden; }
@@ -755,8 +756,8 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div style="height:2px;"></div>
   <div class="posts-grid reveal">
-    {{ range $i, $p := after 1 (first 4 $pages) }}
-    <a href="{{ $p.Permalink }}" class="post-card{{ if eq $i 2 }} mobile-only{{ end }}">
+    {{ range $i, $p := after 1 (first 5 $pages) }}
+    <a href="{{ $p.Permalink }}" class="post-card{{ if eq $i 3 }} mobile-only{{ end }}">
       <div class="post-card-img">
         <img src="{{ $p.Params.cover }}" alt="{{ $p.Title }}" loading="lazy">
       </div>
