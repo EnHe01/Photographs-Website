@@ -650,7 +650,6 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 
   /* POSTS GRID — 2列 */
   .posts-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .mobile-only { display: block; }
   .post-card-title { font-size: 1rem; }
   .post-card-body { padding: 1rem 1rem 1.2rem; }
 
@@ -681,6 +680,10 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   transform: translateY(0);
 }
 .mobile-only { display: none; }
+@media (max-width: 480px) {
+ .mobile-only { display: block; }
+ .posts-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
 </style>
 </head>
 <body>
