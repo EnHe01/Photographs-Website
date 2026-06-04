@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: EnHe01/Photographs-Website
   branch: main
 
 media_folder: static/uploads
