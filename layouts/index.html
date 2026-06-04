@@ -498,12 +498,14 @@ nav {
   gap: 3px;
   overflow-x: auto;
   overflow-y: hidden;
-  
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 0 3rem;
   cursor: grab;
   user-select: none;
+  will-change: scroll-position;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .gallery-track:active { cursor: grabbing; }
@@ -523,6 +525,9 @@ nav {
   filter: brightness(0.85);
   transition: filter 0.5s;
   pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .gallery-item:hover img { filter: brightness(1); }
