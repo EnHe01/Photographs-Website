@@ -48,6 +48,27 @@ body::before {
 }
 
 /* NAV */
+.lang-switch {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.lang-btn {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white-dim);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid transparent;
+  transition: all 0.25s;
+}
+
+.lang-btn:hover { color: var(--white); }
+.lang-btn.active { color: var(--white); border-color: var(--white-dim); }
+
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -701,10 +722,15 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <span class="nav-logo-sub">Notes from the Road</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#journal">Journal</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#collab">Collab</a></li>
+    <li><a href="#journal">{{ .Site.Params.nav_journal }}</a></li>
+    <li><a href="#gallery">{{ .Site.Params.nav_gallery }}</a></li>
+    <li><a href="#collab">{{ .Site.Params.nav_collab }}</a></li>
   </ul>
+  <div class="lang-switch">
+    <a href="/" class="lang-btn {{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
+    <a href="/en/" class="lang-btn {{ if eq .Site.Language.Lang "en" }}active{{ end }}">EN</a>
+    <a href="/ja/" class="lang-btn {{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
+  </div>
 </nav>
 
 <section class="hero">
@@ -721,8 +747,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <h1 class="hero-name">En<em>He</em></h1>
     <div class="hero-info-row">
       <div class="hero-desc">
-        Documenting the world one frame at a time.<br>
-        Travel, portrait, and the quiet moments in between.
+        {{ .Site.Params.hero_desc }}
       </div>
       <div class="hero-tags">
         <span class="hero-tag">Travel</span>
@@ -745,12 +770,12 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
         <div class="section-line"></div>
         <span class="section-label">Journal</span>
       </div>
-      <h2 class="section-title">Travel Journal</h2>
+      <h2 class="section-title">{{ .Site.Params.nav_journal }}</h2>
     </div>
-    <a href="/blog/" class="view-all">All Posts</a>
+    <a href="/blog/" class="view-all">{{ .Site.Params.all_posts }}</a>
   </div>
 
-  {{ $pages := where .Site.RegularPages "Section" "blog" }}
+  {{ $pages := where .Site.RegularPages "Type" "blog" }}
   {{ $first := index $pages 0 }}
   {{ if $first }}
   <div class="featured-post reveal">
@@ -762,7 +787,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       <p class="post-date">{{ $first.Date.Format "2006 · 01 · 02" }}</p>
       <h3 class="featured-post-title">{{ $first.Title }}</h3>
       <p class="featured-post-excerpt">{{ $first.Params.excerpt }}</p>
-      <a href="{{ $first.Permalink }}" class="read-link">Read More</a>
+      <a href="{{ $first.Permalink }}" class="read-link">{{ $.Site.Params.read_more }}</a>
     </div>
   </div>
   <div style="height:2px;"></div>
@@ -793,9 +818,9 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
         <div class="section-line"></div>
         <span class="section-label">Gallery</span>
       </div>
-      <h2 class="section-title">Gallery</h2>
+      <h2 class="section-title">{{ .Site.Params.nav_gallery }}</h2>
     </div>
-    <span class="gallery-hint">Drag to explore</span>
+    <span class="gallery-hint">{{ .Site.Params.drag }}</span>
   </div>
   <div class="gallery-track-wrap reveal">
     <div class="gallery-track" id="galleryTrack">
@@ -826,7 +851,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       <span class="section-label">Collab</span>
     </div>
     <h2>Let's<br>work <em>together</em></h2>
-    <p>Portrait · Travel · Content.<br>Available across Japan. Let's talk.</p>
+    <p>{{ .Site.Params.collab_desc }}</p>
     <div class="collab-links">
       <a href="https://www.instagram.com/en1he_" target="_blank" class="collab-link">
         <span class="collab-link-name">Instagram</span>
@@ -837,7 +862,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
         <span class="collab-link-arrow">↗</span>
       </a>
       <a href="/book.html" class="collab-link">
-        <span class="collab-link-name">Book a Shoot</span>
+        <span class="collab-link-name">{{ .Site.Params.book }}</span>
         <span class="collab-link-arrow">↗</span>
       </a>
     </div>
@@ -857,7 +882,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <span class="footer-logo">EnHe</span>
     <span class="footer-sub">Notes from the Road</span>
   </div>
-  <p>© 2025 · Tokyo · Beijing</p>
+  <p>{{ .Site.Params.footer_copy }}</p>
   <div class="footer-social">
     <a href="https://www.instagram.com/en1he_" target="_blank">Instagram</a>
     <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank">RedNote</a>

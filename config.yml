@@ -1,13 +1,62 @@
 baseURL: "https://enhephotographs.netlify.app/"
-languageCode: "zh-CN"
-title: "旅途"
+title: "EnHe"
 
-params:
-  hero_title: "路过每一处光与影"
-  hero_desc: "用镜头记录那些短暂停留的时刻，文字只是光影之外留下的痕迹。"
-  hero_image: ""
+defaultContentLanguage: "zh"
+defaultContentLanguageInSubdir: true
 
 outputs:
   home:
     - HTML
     - JSON
+
+languages:
+  zh:
+    languageName: "中文"
+    languageCode: "zh-CN"
+    weight: 1
+    contentDir: content/zh
+    params:
+      hero_desc: "用镜头记录那些短暂停留的时刻"
+      nav_journal: "日记"
+      nav_gallery: "Gallery"
+      nav_collab: "Collab"
+      all_posts: "所有文章"
+      read_more: "Read More"
+      drag: "拖动浏览"
+      collab_desc: "旅拍、人像、内容合作。在日本各地均可拍摄，欢迎来找我聊。"
+      book: "Book a Shoot"
+      footer_copy: "© 2025 · Tokyo · Beijing"
+
+  en:
+    languageName: "EN"
+    languageCode: "en-US"
+    weight: 2
+    contentDir: content/en
+    params:
+      hero_desc: "Documenting the world one frame at a time"
+      nav_journal: "Journal"
+      nav_gallery: "Gallery"
+      nav_collab: "Collab"
+      all_posts: "All Posts"
+      read_more: "Read More"
+      drag: "Drag to explore"
+      collab_desc: "Portrait · Travel · Content. Available across Japan. Let's talk."
+      book: "Book a Shoot"
+      footer_copy: "© 2025 · Tokyo · Beijing"
+
+  ja:
+    languageName: "日本語"
+    languageCode: "ja"
+    weight: 3
+    contentDir: content/ja
+    params:
+      hero_desc: "旅の記録、一枚一枚"
+      nav_journal: "日記"
+      nav_gallery: "ギャラリー"
+      nav_collab: "コラボ"
+      all_posts: "すべての記事"
+      read_more: "続きを読む"
+      drag: "スワイプして見る"
+      collab_desc: "ポートレート・旅撮影・コンテンツ制作。日本全国対応。"
+      book: "撮影を予約"
+      footer_copy: "© 2025 · 東京 · 北京"
