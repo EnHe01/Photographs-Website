@@ -6,6 +6,9 @@ on:
       - 'content/zh/blog/**.md'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   translate:
     runs-on: ubuntu-latest
