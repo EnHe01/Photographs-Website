@@ -7,7 +7,7 @@ import yaml
 DEEPL_KEY = os.environ["DEEPL_API_KEY"]
 translator = deepl.Translator(DEEPL_KEY)
 
-BLOG_DIR = "content/blog"
+BLOG_DIR = "content/zh/blog"
 CACHE_FILE = "scripts/.translation_cache.yml"
 
 def load_cache():
