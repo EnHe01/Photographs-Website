@@ -3,7 +3,7 @@ name: Translate Posts
 on:
   push:
     paths:
-      - 'content/blog/**.md'
+      - 'content/zh/blog/**.md'
 
 jobs:
   translate:
