@@ -989,5 +989,19 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   document.addEventListener('keydown', e => {
     if (e.key === 'PrintScreen') e.preventDefault();
   });
+
+  // Image protection
+  document.addEventListener('contextmenu', e => {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('dragstart', e => e.preventDefault());
+    img.style.userSelect = 'none';
+    img.style.webkitUserSelect = 'none';
+    img.setAttribute('oncontextmenu', 'return false');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'PrintScreen') e.preventDefault();
+  });
 </script>
 
