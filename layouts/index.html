@@ -767,7 +767,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       </div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-loc">{{ $p.Params.location }}</span>
+          <span class="post-card-loc">{{ index (split $p.Params.location ",") 0 }}</span>
           <span class="post-card-date">{{ $p.Date.Format "2006.01.02" }}</span>
         </div>
         <h3 class="post-card-title">{{ $p.Title }}</h3>
