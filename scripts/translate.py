@@ -75,10 +75,12 @@ def main():
         fm, body = parse_frontmatter(content)
         base = fname.replace(".md", "")
 
-        en_path = os.path.join(BLOG_DIR, f"{base}.en.md")
+        os.makedirs(EN_DIR, exist_ok=True)
+        os.makedirs(JA_DIR, exist_ok=True)
+        en_path = os.path.join(EN_DIR, f"{base}.md")
         write_translated(fm, body, en_path, "EN-US")
 
-        ja_path = os.path.join(BLOG_DIR, f"{base}.ja.md")
+        ja_path = os.path.join(JA_DIR, f"{base}.md")
         write_translated(fm, body, ja_path, "JA")
 
         cache[fname] = h
