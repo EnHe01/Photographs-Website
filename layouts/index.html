@@ -49,25 +49,52 @@ body::before {
 
 /* NAV */
 .lang-switch {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  margin-left: 2rem;
+  position: relative;
+  margin-left: 1.5rem;
 }
 
-.lang-btn {
+.lang-current {
   font-size: 0.62rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--white-dim);
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid transparent;
+  color: var(--white-mid);
+  background: none;
+  border: 1px solid var(--white-dimmer);
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
   transition: all 0.25s;
+  font-family: inherit;
 }
 
-.lang-btn:hover { color: var(--white); }
-.lang-btn.active { color: var(--white); border-color: var(--white-dim); }
+.lang-current:hover { color: var(--white); border-color: var(--white-dim); }
+
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: rgba(15,14,12,0.97);
+  border: 1px solid var(--white-dimmer);
+  backdrop-filter: blur(16px);
+  min-width: 100px;
+  z-index: 200;
+}
+
+.lang-dropdown.open { display: block; }
+
+.lang-dropdown a {
+  display: block;
+  padding: 0.6rem 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white-mid);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+}
+
+.lang-dropdown a:hover { color: var(--white); background: var(--white-dimmer); }
+.lang-dropdown a.active { color: var(--white); }
 
 nav {
   position: fixed;
@@ -727,9 +754,12 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <li><a href="#collab">{{ .Site.Params.nav_collab }}</a></li>
   </ul>
   <div class="lang-switch">
-    <a href="/" class="lang-btn {{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
-    <a href="/en/" class="lang-btn {{ if eq .Site.Language.Lang "en" }}active{{ end }}">EN</a>
-    <a href="/ja/" class="lang-btn {{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
+    <button class="lang-current" id="langBtn">{{ if eq .Site.Language.Lang "zh" }}中文{{ else if eq .Site.Language.Lang "en" }}EN{{ else }}日本語{{ end }} ▾</button>
+    <div class="lang-dropdown" id="langDropdown">
+      <a href="/" class="{{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
+      <a href="/en/" class="{{ if eq .Site.Language.Lang "en" }}active{{ end }}">EN</a>
+      <a href="/ja/" class="{{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
+    </div>
   </div>
 </nav>
 
@@ -889,6 +919,17 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
 </footer>
 <script>
+  // Language dropdown
+  const langBtn = document.getElementById('langBtn');
+  const langDropdown = document.getElementById('langDropdown');
+  if (langBtn) {
+    langBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      langDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', () => langDropdown.classList.remove('open'));
+  }
+
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
   const observer = new IntersectionObserver(entries => {

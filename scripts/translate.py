@@ -5,7 +5,7 @@ import deepl
 import yaml
 
 DEEPL_KEY = os.environ["DEEPL_API_KEY"]
-translator = deepl.Translator(DEEPL_KEY)
+translator = deepl.Translator(DEEPL_KEY, server_url="https://api-free.deepl.com")
 
 BLOG_DIR = "content/zh/blog"
 EN_DIR = "content/en/blog"
