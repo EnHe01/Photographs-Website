@@ -8,6 +8,8 @@ DEEPL_KEY = os.environ["DEEPL_API_KEY"]
 translator = deepl.Translator(DEEPL_KEY)
 
 BLOG_DIR = "content/zh/blog"
+EN_DIR = "content/en/blog"
+JA_DIR = "content/ja/blog"
 CACHE_FILE = "scripts/.translation_cache.yml"
 
 def load_cache():
@@ -89,8 +91,8 @@ def main():
     for fname in list(cache.keys()):
         base = fname.replace(".md", "")
         if base not in existing:
-            for lang in ["en", "ja"]:
-                lang_file = os.path.join(BLOG_DIR, f"{base}.{lang}.md")
+            for lang_dir, lang in [(EN_DIR, "en"), (JA_DIR, "ja")]:
+                lang_file = os.path.join(lang_dir, f"{base}.md")
                 if os.path.exists(lang_file):
                     os.remove(lang_file)
                     print(f"Removed {lang_file}")
