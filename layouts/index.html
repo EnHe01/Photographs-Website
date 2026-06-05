@@ -802,7 +802,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       </div>
       <h2 class="section-title">{{ .Site.Params.nav_journal }}</h2>
     </div>
-    <a href="/blog/" class="view-all">{{ .Site.Params.all_posts }}</a>
+    <a href="/{{ .Site.Language.Lang }}/blog/" class="view-all">{{ .Site.Params.all_posts }}</a>
   </div>
 
   {{ $pages := where .Site.RegularPages "Type" "blog" }}
