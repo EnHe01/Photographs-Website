@@ -681,10 +681,72 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 .footer-social a { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.25s; }
 .footer-social a:hover { color: var(--white); }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--white-mid);
+  transition: all 0.3s;
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,14,12,0.97);
+  z-index: 99;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 1.8rem;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  color: var(--white-mid);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.25s;
+}
+.mobile-menu a:hover { color: var(--white); }
+.mobile-menu-close {
+  position: absolute;
+  top: 1.8rem;
+  right: 1.8rem;
+  background: none;
+  border: none;
+  color: var(--white-mid);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.mobile-lang {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.mobile-lang a {
+  font-size: 0.75rem !important;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white-dim) !important;
+}
+.mobile-lang a.active { color: var(--white) !important; }
+
 @media (max-width: 768px) {
   nav { padding: 1.2rem 1.5rem; }
-  .nav-links { gap: 1.2rem; }
-  .nav-links a { font-size: 0.62rem; }
+  .nav-links { display: none; }
+  .lang-switch { display: none; }
+  .hamburger { display: flex; }
 
   /* HERO */
   .hero { padding: 0 1.5rem; }
@@ -761,7 +823,22 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       <a href="/ja/" class="{{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
     </div>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose">✕</button>
+  <a href="#journal" onclick="closeMobileMenu()">{{ .Site.Params.nav_journal }}</a>
+  <a href="#gallery" onclick="closeMobileMenu()">{{ .Site.Params.nav_gallery }}</a>
+  <a href="#collab" onclick="closeMobileMenu()">{{ .Site.Params.nav_collab }}</a>
+  <div class="mobile-lang">
+    <a href="/zh/" class="{{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
+    <a href="/en/" class="{{ if eq .Site.Language.Lang "en" }}active{{ end }}">EN</a>
+    <a href="/ja/" class="{{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
+  </div>
+</div>
 
 <section class="hero">
   <div class="hero-main">
@@ -928,6 +1005,15 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       langDropdown.classList.toggle('open');
     });
     document.addEventListener('click', () => langDropdown.classList.remove('open'));
+  }
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileClose = document.getElementById('mobileClose');
+  function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+  if (hamburger) {
+    hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    mobileClose.addEventListener('click', closeMobileMenu);
   }
 
   const sections = document.querySelectorAll('section[id]');
