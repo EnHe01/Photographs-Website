@@ -985,9 +985,35 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     }
     setInterval(() => { if (!isUserInteracting) scrollToIndex(currentIndex + 1); }, 2500);
     track.addEventListener('mousedown', () => { isUserInteracting = true; });
-    track.addEventListener('mouseup', () => { setTimeout(() => { isUserInteracting = false; }, 1500); });
+    track.addEventListener('mouseup', () => {
+      setTimeout(() => {
+        isUserInteracting = false;
+        const items = getItems();
+        let closest = 0;
+        let minDist = Infinity;
+        items.forEach((item, i) => {
+          const center = item.offsetLeft + item.offsetWidth / 2;
+          const dist = Math.abs(track.scrollLeft + track.clientWidth / 2 - center);
+          if (dist < minDist) { minDist = dist; closest = i; }
+        });
+        currentIndex = closest;
+      }, 1500);
+    });
     track.addEventListener('touchstart', () => { isUserInteracting = true; }, { passive: true });
-    track.addEventListener('touchend', () => { setTimeout(() => { isUserInteracting = false; }, 1500); });
+    track.addEventListener('touchend', () => {
+      setTimeout(() => {
+        isUserInteracting = false;
+        const items = getItems();
+        let closest = 0;
+        let minDist = Infinity;
+        items.forEach((item, i) => {
+          const center = item.offsetLeft + item.offsetWidth / 2;
+          const dist = Math.abs(track.scrollLeft + track.clientWidth / 2 - center);
+          if (dist < minDist) { minDist = dist; closest = i; }
+        });
+        currentIndex = closest;
+      }, 1500);
+    });
   }
   if (track) {
     let isDown = false, startX, scrollLeft;
