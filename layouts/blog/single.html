@@ -43,10 +43,23 @@ img {
   user-select: none;
   pointer-events: none;
 }
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background: var(--white);
+  z-index: 200;
+  transition: width 0.1s linear;
+  opacity: 0.6;
+}
 </style>
 </head>
 <body>
 
+<div class="reading-progress" id="readingProgress"></div>
 <nav>
   <a href="/{{ .Site.Language.Lang }}/" class="nav-logo">EnHe</a>
   <div style="display:flex;align-items:center;gap:1rem;">
@@ -92,6 +105,16 @@ if (langBtn) {
   langBtn.addEventListener('click', e => { e.stopPropagation(); langDropdown.classList.toggle('open'); });
   document.addEventListener('click', () => langDropdown.classList.remove('open'));
 }
+
+  const progress = document.getElementById('readingProgress');
+  if (progress) {
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progress.style.width = pct + '%';
+    });
+  }
 </script>
 </body>
 </html>
