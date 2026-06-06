@@ -970,7 +970,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       if (!items.length) return;
       if (index >= items.length) index = 0;
       currentIndex = index;
-      const target = items[index].offsetLeft - 48;
+      const target = items[index].offsetLeft - (track.clientWidth / 2) + (items[index].offsetWidth / 2);
       const start = track.scrollLeft;
       const diff = target - start;
       const startTime = performance.now();
