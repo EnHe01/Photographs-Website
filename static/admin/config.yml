@@ -18,7 +18,7 @@ collections:
       - { label: 封面图片, name: cover, widget: image }
       - { label: 摘要, name: excerpt, widget: text }
       - { label: 正文, name: body, widget: markdown }
-      - { label: 原文语言, name: source_lang, widget: hidden, default: zh }
+      - { label: 原文语言, name: source_lang, widget: select, options: [zh, en, ja], default: zh }
 
   - name: blog_en
     label: Journal (English)
@@ -32,7 +32,7 @@ collections:
       - { label: Cover Image, name: cover, widget: image }
       - { label: Excerpt, name: excerpt, widget: text }
       - { label: Body, name: body, widget: markdown }
-      - { label: Source Language, name: source_lang, widget: hidden, default: en }
+      - { label: Source Language, name: source_lang, widget: select, options: [zh, en, ja], default: en }
 
   - name: blog_ja
     label: 日記（日本語）
@@ -46,7 +46,7 @@ collections:
       - { label: カバー画像, name: cover, widget: image }
       - { label: 概要, name: excerpt, widget: text }
       - { label: 本文, name: body, widget: markdown }
-      - { label: 原文言語, name: source_lang, widget: hidden, default: ja }
+      - { label: 原文言語, name: source_lang, widget: select, options: [zh, en, ja], default: ja }
 
   - name: settings
     label: 网站设置
