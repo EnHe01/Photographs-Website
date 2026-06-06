@@ -47,6 +47,71 @@ body::before {
   background-size: 180px 180px;
 }
 
+
+/* LOADER */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0a0a09;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease;
+}
+
+#loader.hide {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.loader-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 300;
+  color: #edeae3;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: loaderFadeUp 0.8s 0.2s forwards;
+}
+
+.loader-name em {
+  font-style: italic;
+  color: rgba(237,234,227,0.35);
+}
+
+.loader-sub {
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(237,234,227,0.2);
+  opacity: 0;
+  animation: loaderFadeUp 0.8s 0.5s forwards;
+}
+
+.loader-line {
+  width: 0;
+  height: 1px;
+  background: rgba(237,234,227,0.15);
+  animation: loaderExpand 1s 0.3s forwards;
+}
+
+@keyframes loaderFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loaderExpand {
+  to { width: 120px; }
+}
 /* NAV */
 .lang-switch {
   position: relative;
@@ -807,6 +872,14 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 </head>
 <body>
 
+<div id="loader">
+  <div class="loader-content">
+    <div class="loader-name">En<em>He</em></div>
+    <div class="loader-line"></div>
+    <div class="loader-sub">Notes from the Road</div>
+  </div>
+</div>
+
 <nav>
   <a href="/" class="nav-logo">
     <span class="nav-logo-name">EnHe</span>
@@ -1017,6 +1090,15 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
     mobileClose.addEventListener('click', closeMobileMenu);
   }
+
+  // Loader
+  const loader = document.getElementById('loader');
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      loader.classList.add('hide');
+      setTimeout(() => { loader.style.display = 'none'; }, 1000);
+    }, 1200);
+  });
 
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
