@@ -962,6 +962,34 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
 
   const track = document.getElementById('galleryTrack');
   if (track) {
+    let isUserInteracting = false;
+    let currentIndex = 0;
+    function getItems() { return track.querySelectorAll('.gallery-item'); }
+    function scrollToIndex(index) {
+      const items = getItems();
+      if (!items.length) return;
+      if (index >= items.length) index = 0;
+      currentIndex = index;
+      const target = items[index].offsetLeft - 48;
+      const start = track.scrollLeft;
+      const diff = target - start;
+      const startTime = performance.now();
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / 900, 1);
+        const ease = progress < 0.5 ? 2*progress*progress : -1+(4-2*progress)*progress;
+        track.scrollLeft = start + diff * ease;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    setInterval(() => { if (!isUserInteracting) scrollToIndex(currentIndex + 1); }, 2500);
+    track.addEventListener('mousedown', () => { isUserInteracting = true; });
+    track.addEventListener('mouseup', () => { setTimeout(() => { isUserInteracting = false; }, 1500); });
+    track.addEventListener('touchstart', () => { isUserInteracting = true; }, { passive: true });
+    track.addEventListener('touchend', () => { setTimeout(() => { isUserInteracting = false; }, 1500); });
+  }
+  if (track) {
     let isDown = false, startX, scrollLeft;
     let velX = 0, lastX = 0, lastTime = 0, animFrame;
 
