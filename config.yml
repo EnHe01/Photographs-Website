@@ -1,7 +1,7 @@
 baseURL: "https://enhephotographs.netlify.app/"
 title: "EnHe"
 
-defaultContentLanguage: "zh"
+defaultContentLanguage: "en"
 defaultContentLanguageInSubdir: true
 
 outputs:
