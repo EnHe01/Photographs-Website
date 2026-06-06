@@ -33,7 +33,13 @@ def add_watermark(img_path):
 
         combined = Image.alpha_composite(img, overlay)
         result = combined.convert("RGB")
-        result.save(img_path, quality=92, optimize=True)
+        # Resize if too large
+        max_dim = 2400
+        w, h = result.size
+        if max(w, h) > max_dim:
+            ratio = max_dim / max(w, h)
+            result = result.resize((int(w * ratio), int(h * ratio)), Image.LANCZOS)
+        result.save(img_path, quality=82, optimize=True)
         print(f"  Watermarked: {img_path}")
     except Exception as e:
         print(f"  Skipped {img_path}: {e}")
