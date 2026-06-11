@@ -30,3 +30,23 @@
   for = "/*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+  from = "/"
+  to = "/zh/"
+  status = 302
+  force = false
+  conditions = {Language = ["zh", "zh-CN", "zh-TW"]}
+
+[[redirects]]
+  from = "/"
+  to = "/ja/"
+  status = 302
+  force = false
+  conditions = {Language = ["ja"]}
+
+[[redirects]]
+  from = "/"
+  to = "/en/"
+  status = 302
+  force = false
