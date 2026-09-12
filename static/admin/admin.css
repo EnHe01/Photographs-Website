@@ -1,4 +1,9 @@
 * { box-sizing: border-box; }
+/* Browsers only apply [hidden] { display: none } from the UA stylesheet,
+   which loses to any author rule that sets `display` on the same element
+   (e.g. .login-screen/.app-screen below use display: flex). Without this,
+   toggling the `hidden` property from JS does nothing visually. */
+[hidden] { display: none !important; }
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
