@@ -1,9 +1,11 @@
 name: Translate Posts
 
+# Auto-run on push was disabled: it force-overwrites content/en and
+# content/ja from content/zh on every push, which would clobber the
+# manually reviewed translations produced by the admin's "translate
+# suggestion" button. Run manually (workflow_dispatch) if you still want
+# a bulk re-translate pass.
 on:
-  push:
-    paths:
-      - 'content/zh/blog/**.md'
   workflow_dispatch:
 
 permissions:
