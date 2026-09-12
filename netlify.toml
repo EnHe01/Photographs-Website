@@ -1,9 +1,14 @@
 [build]
   publish = "public"
-  command = "pip install Pillow && python3 scripts/watermark.py && hugo"
+  command = "hugo"
 
 [build.environment]
   HUGO_VERSION = "0.162.0"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp"]
 
 [[headers]]
   for = "/*"
@@ -14,7 +19,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com https://unpkg.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://cloud.umami.is https://api-free.deepl.com https://api.netlify.com https://*.netlify.com; frame-src 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://cloud.umami.is; frame-src 'none';"
 
 [[headers]]
   for = "/uploads/*"
