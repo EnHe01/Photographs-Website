@@ -5,11 +5,7 @@
   const LANGS = ["zh", "en", "ja"];
 
   const el = (id) => document.getElementById(id);
-  const loginScreen = el("loginScreen");
-  const loginForm = el("loginForm");
-  const loginUsername = el("loginUsername");
-  const loginPassword = el("loginPassword");
-  const loginError = el("loginError");
+  const authLoading = el("authLoading");
   const appScreen = el("appScreen");
   const logoutBtn = el("logoutBtn");
   const statusMsg = el("statusMsg");
@@ -60,7 +56,7 @@
       opts || {}
     ));
     if (res.status === 401) {
-      showLogin();
+      goToLogin();
       const err = new Error("請重新登入");
       err.status = 401;
       throw err;
@@ -74,13 +70,12 @@
     return data;
   }
 
-  function showLogin() {
-    appScreen.hidden = true;
-    loginScreen.hidden = false;
+  function goToLogin() {
+    window.location.href = "/admin/index.html";
   }
 
   function showApp() {
-    loginScreen.hidden = true;
+    authLoading.hidden = true;
     appScreen.hidden = false;
     state.langData = null;
     renderForm();
@@ -400,25 +395,9 @@
 
   logoutBtn.addEventListener("click", async () => {
     await api("/logout", { method: "POST" }).catch(() => {});
-    showLogin();
-  });
-
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    loginError.hidden = true;
-    try {
-      await api("/login", {
-        method: "POST",
-        body: JSON.stringify({ username: loginUsername.value, password: loginPassword.value }),
-      });
-      loginPassword.value = "";
-      showApp();
-    } catch (err) {
-      loginError.textContent = err.message || "登入失敗";
-      loginError.hidden = false;
-    }
+    goToLogin();
   });
 
   // ---- init ----
-  api("/me").then(showApp).catch(showLogin);
+  api("/me").then(showApp).catch(goToLogin);
 })();
