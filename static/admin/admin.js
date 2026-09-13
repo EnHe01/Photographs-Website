@@ -340,18 +340,30 @@
     }
   });
 
-  // Publishing a post auto-translates + auto-publishes any language that has
-  // no file yet, using the just-published language as the source. A language
-  // that already exists (auto-translated before, or hand-written) is never
-  // touched again automatically — only a fully missing file triggers a
-  // DeepL call, so this costs at most one translation per language per post.
+  // Publishing a post always publishes all three languages together. Any
+  // language that has no file yet is auto-translated (via DeepL) using the
+  // just-published language as the source; if that translation call fails
+  // for any reason, we fall back to copying the source text over untouched
+  // so the language still goes live (rather than silently staying missing)
+  // — you can go translate it by hand afterwards. A language that already
+  // exists (auto-translated before, or hand-written) is never touched again
+  // automatically, so this costs at most one DeepL call per missing
+  // language per post.
   async function autoTranslateMissing(sourceLang) {
     const source = state.langData[sourceLang];
     const targets = LANGS.filter((l) => l !== sourceLang && !state.langData[l].exists);
     for (const targetLang of targets) {
       setStatus(`自動翻譯 ${targetLang} 中...`);
+      let fields;
+      let translated = true;
       try {
-        const fields = await translateFields(sourceLang, targetLang, source);
+        fields = await translateFields(sourceLang, targetLang, source);
+      } catch (err) {
+        translated = false;
+        fields = { title: source.frontmatter.title, excerpt: source.frontmatter.excerpt || "", body: source.body || "" };
+      }
+
+      try {
         const data = state.langData[targetLang];
         data.frontmatter = Object.assign({}, source.frontmatter, {
           title: fields.title,
@@ -366,8 +378,11 @@
         });
         data.sha = res.sha;
         data.exists = true;
+        if (!translated) {
+          setStatus(`${targetLang} 翻譯失敗，已用中文原文發布，請之後手動翻譯`);
+        }
       } catch (err) {
-        alert(`自動翻譯 ${targetLang} 失敗：${err.message}（可以之後在該語言分頁手動翻譯補上）`);
+        alert(`發布 ${targetLang} 失敗：${err.message}`);
       }
     }
   }
