@@ -26,12 +26,14 @@
   const coverPreview = el("coverPreview");
   const fieldExcerpt = el("fieldExcerpt");
   const fieldDraft = el("fieldDraft");
-  const bodyImageBtn = el("bodyImageBtn");
-  const bodyImageInput = el("bodyImageInput");
-  const fieldBody = el("fieldBody");
+  const fieldBodyEditor = el("fieldBodyEditor");
   const saveDraftBtn = el("saveDraftBtn");
   const publishBtn = el("publishBtn");
   const deleteLangBtn = el("deleteLangBtn");
+  const uploadIndicator = el("uploadIndicator");
+  const uploadThumb = el("uploadThumb");
+  const uploadProgressFill = el("uploadProgressFill");
+  const uploadProgressText = el("uploadProgressText");
 
   const state = {
     posts: [],
@@ -39,6 +41,8 @@
     activeLang: "zh",
     langData: null, // { zh: {frontmatter, body, sha, exists}, en: {...}, ja: {...} }
   };
+
+  let bodyEditor = null; // lazily-created toastui.Editor instance
 
   function setStatus(msg) {
     statusMsg.textContent = msg || "";
@@ -187,6 +191,7 @@
     }
     editorEmpty.hidden = true;
     editorForm.hidden = false;
+    ensureBodyEditor();
 
     langTabs.querySelectorAll(".lang-tab").forEach((btn) => {
       const lang = btn.dataset.lang;
@@ -204,7 +209,7 @@
     fieldCover.value = data.frontmatter.cover || "";
     fieldExcerpt.value = data.frontmatter.excerpt || "";
     fieldDraft.checked = !!data.frontmatter.draft;
-    fieldBody.value = data.body || "";
+    bodyEditor.setMarkdown(data.body || "");
 
     if (data.frontmatter.cover) {
       coverPreview.src = data.frontmatter.cover;
@@ -233,42 +238,77 @@
   fieldExcerpt.addEventListener("input", () => setField("excerpt", fieldExcerpt.value));
   fieldDraft.addEventListener("change", () => setField("draft", fieldDraft.checked));
   fieldDate.addEventListener("change", () => setField("date", fromDatetimeLocal(fieldDate.value)));
-  fieldBody.addEventListener("input", () => { state.langData[state.activeLang].body = fieldBody.value; });
   fieldCover.addEventListener("input", () => {
     setField("cover", fieldCover.value);
     if (fieldCover.value) { coverPreview.src = fieldCover.value; coverPreview.hidden = false; }
     else coverPreview.hidden = true;
   });
 
-  // ---- image upload ----
-  function fileToBase64(file) {
+  // ---- image upload (with thumbnail preview + progress, shared by cover
+  // upload and the body editor's image insertion) ----
+  function readAsDataURL(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result).split(",")[1]);
+      reader.onload = () => resolve(String(reader.result));
       reader.onerror = () => reject(new Error("讀取檔案失敗"));
       reader.readAsDataURL(file);
     });
   }
 
-  async function uploadImage(file) {
-    if (file.size > 15 * 1024 * 1024) throw new Error("圖片過大（上限 15MB）");
-    const dataBase64 = await fileToBase64(file);
-    setStatus("上傳圖片中...");
-    const res = await api("/upload", {
-      method: "POST",
-      body: JSON.stringify({ filename: file.name, dataBase64, watermark: true }),
-    });
-    setStatus("");
-    return res.url;
+  function extFromMimeType(type) {
+    if (type === "image/png") return "png";
+    if (type === "image/webp") return "webp";
+    return "jpg";
   }
 
-  function insertAtCursor(textarea, text) {
-    const start = textarea.selectionStart || 0;
-    const end = textarea.selectionEnd || 0;
-    textarea.value = textarea.value.slice(0, start) + text + textarea.value.slice(end);
-    const pos = start + text.length;
-    textarea.selectionStart = textarea.selectionEnd = pos;
-    textarea.focus();
+  function showUploadIndicator(thumbDataUrl) {
+    uploadThumb.src = thumbDataUrl;
+    uploadProgressFill.style.width = "0%";
+    uploadProgressText.textContent = "上傳中... 0%";
+    uploadIndicator.hidden = false;
+  }
+  function updateUploadProgress(pct) {
+    uploadProgressFill.style.width = pct + "%";
+    uploadProgressText.textContent = `上傳中... ${pct}%`;
+  }
+  function hideUploadIndicator() {
+    uploadIndicator.hidden = true;
+  }
+
+  // POSTs to /upload via XHR (instead of fetch) so we get real upload
+  // progress events to drive the progress bar.
+  function uploadDataUrl(dataUrl, filename, onProgress) {
+    return new Promise((resolve, reject) => {
+      const dataBase64 = dataUrl.split(",")[1];
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", API_BASE + "/upload");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onload = () => {
+        let data = {};
+        try { data = JSON.parse(xhr.responseText); } catch { /* ignore */ }
+        if (xhr.status >= 200 && xhr.status < 300) resolve(data);
+        else reject(new Error(data.error || `請求失敗 (${xhr.status})`));
+      };
+      xhr.onerror = () => reject(new Error("網路錯誤"));
+      xhr.send(JSON.stringify({ filename, dataBase64, watermark: true }));
+    });
+  }
+
+  // Shared upload flow: shows the thumbnail immediately, drives the
+  // progress bar, and returns the final { url }.
+  async function uploadImageWithFeedback(file, filename) {
+    if (file.size > 15 * 1024 * 1024) throw new Error("圖片過大（上限 15MB）");
+    const dataUrl = await readAsDataURL(file);
+    showUploadIndicator(dataUrl);
+    try {
+      const res = await uploadDataUrl(dataUrl, filename, updateUploadProgress);
+      return res;
+    } finally {
+      hideUploadIndicator();
+    }
   }
 
   coverUploadBtn.addEventListener("click", () => coverUploadInput.click());
@@ -277,31 +317,48 @@
     coverUploadInput.value = "";
     if (!file) return;
     try {
-      const url = await uploadImage(file);
-      fieldCover.value = url;
-      setField("cover", url);
-      coverPreview.src = url;
+      const res = await uploadImageWithFeedback(file, file.name);
+      fieldCover.value = res.url;
+      setField("cover", res.url);
+      coverPreview.src = res.url;
       coverPreview.hidden = false;
     } catch (err) {
-      setStatus("");
       alert("上傳失敗：" + err.message);
     }
   });
 
-  bodyImageBtn.addEventListener("click", () => bodyImageInput.click());
-  bodyImageInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    bodyImageInput.value = "";
-    if (!file) return;
-    try {
-      const url = await uploadImage(file);
-      insertAtCursor(fieldBody, `\n\n![](${url})\n\n`);
-      state.langData[state.activeLang].body = fieldBody.value;
-    } catch (err) {
-      setStatus("");
-      alert("上傳失敗：" + err.message);
-    }
-  });
+  // Creates the WYSIWYG body editor the first time it's needed (needs a
+  // visible, sized container, so this is called from renderForm() right
+  // after editorForm is unhidden rather than at page load). Image
+  // insertion — via the toolbar button, drag-and-drop, or paste, Toast UI
+  // routes all of them through this one hook — uploads through the shared
+  // progress/thumbnail flow above.
+  function ensureBodyEditor() {
+    if (bodyEditor) return;
+    bodyEditor = new toastui.Editor({
+      el: fieldBodyEditor,
+      height: "auto",
+      minHeight: "400px",
+      initialEditType: "wysiwyg",
+      previewStyle: "vertical",
+      theme: "dark",
+      placeholder: "開始寫內文...",
+      hooks: {
+        addImageBlobHook: async (blob, callback) => {
+          const filename = blob.name || `image.${extFromMimeType(blob.type)}`;
+          try {
+            const res = await uploadImageWithFeedback(blob, filename);
+            callback(res.url, filename);
+          } catch (err) {
+            alert("上傳失敗：" + err.message);
+          }
+        },
+      },
+    });
+    bodyEditor.on("change", () => {
+      if (state.langData) state.langData[state.activeLang].body = bodyEditor.getMarkdown();
+    });
+  }
 
   // ---- translate ----
   // Calls /translate and returns the translated { title, excerpt, body }.
