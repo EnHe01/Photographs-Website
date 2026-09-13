@@ -359,16 +359,25 @@
       if (state.langData) state.langData[state.activeLang].body = bodyEditor.getMarkdown();
     });
 
-    // Toast UI's heading dropdown (and a couple of its other popups) don't
-    // close themselves on an outside click the way a normal dropdown would
-    // — clicking into the content to start typing, or clicking anywhere
-    // else on the page, leaves them stuck open. Force them closed on any
-    // click outside the toolbar (clicks inside the toolbar, including the
-    // button that opened a popup, are left to the editor's own handling).
+    // Toast UI's heading dropdown (and similar popups) don't close on an
+    // outside click the way a normal dropdown would — closing goes through
+    // the editor's own eventEmitter ('closePopup') instead, and nothing
+    // wires that up to outside clicks. Without this, clicking into the
+    // content to start typing (or clicking one of the popup's own options,
+    // which visually overlaps the content below it) leaves it stuck open.
+    //
+    // Only exclude clicks on the toolbar's toggle buttons themselves —
+    // the popup is actually a DOM descendant of .toastui-editor-toolbar
+    // (floated over the content via CSS), so excluding the whole toolbar
+    // would also exclude clicks on the popup's own options.
+    //
+    // The emit is deferred a tick so the editor's own click handling (e.g.
+    // applying the selected heading level, which touches toolbar button
+    // state) finishes first — emitting synchronously gets clobbered by
+    // that follow-up render.
     document.addEventListener("click", (e) => {
-      const toolbar = fieldBodyEditor.querySelector(".toastui-editor-toolbar");
-      if (toolbar && toolbar.contains(e.target)) return;
-      bodyEditor.eventEmitter.emit("closePopup");
+      if (e.target.closest(".toastui-editor-toolbar-icons")) return;
+      setTimeout(() => bodyEditor.eventEmitter.emit("closePopup"), 0);
     });
   }
 
