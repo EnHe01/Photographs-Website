@@ -230,7 +230,12 @@
     fieldLocation.value = data.frontmatter.location || "";
     fieldCover.value = data.frontmatter.cover || "";
     fieldExcerpt.value = data.frontmatter.excerpt || "";
-    bodyEditor.setMarkdown(data.body || "");
+    // The 2nd arg (default true) makes Toast UI move the cursor to the end
+    // of the new content and focus + scroll the editor into view — on a
+    // tablet/mobile browser that yanks the whole page down to the body
+    // editor every time a language tab (or post) is switched. false keeps
+    // the content update without stealing focus or scroll position.
+    bodyEditor.setMarkdown(data.body || "", false);
 
     if (data.frontmatter.cover) {
       coverPreview.src = data.frontmatter.cover;
