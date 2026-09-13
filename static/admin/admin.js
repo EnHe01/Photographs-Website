@@ -16,6 +16,7 @@
   const editorForm = el("editorForm");
   const langTabs = el("langTabs");
   const langMissingNote = el("langMissingNote");
+  const langNoteText = el("langNoteText");
   const translateFromZhBtn = el("translateFromZhBtn");
   const fieldTitle = el("fieldTitle");
   const fieldDate = el("fieldDate");
@@ -188,6 +189,29 @@
     renderForm();
   }
 
+  // Updates the bits of chrome that depend on state.langData[activeLang]
+  // without touching the form fields or body editor themselves — shared by
+  // renderForm() (full load) and saveCurrent()'s lighter post-save refresh.
+  function refreshLangChrome() {
+    const data = state.langData[state.activeLang];
+    langTabs.querySelectorAll(".lang-tab").forEach((btn) => {
+      const lang = btn.dataset.lang;
+      btn.classList.toggle("active", lang === state.activeLang);
+      btn.classList.toggle("has-content", !!(state.langData[lang] && state.langData[lang].exists));
+    });
+
+    const isZh = state.activeLang === "zh";
+    langMissingNote.hidden = isZh;
+    translateFromZhBtn.hidden = isZh;
+    if (!isZh) {
+      langNoteText.textContent = data.exists ? "此語言版本已存在。" : "此語言版本尚未建立。";
+      translateFromZhBtn.textContent = data.exists ? "重新從中文翻譯（會覆蓋目前內容）" : "從中文翻譯建議";
+    }
+
+    deleteLangBtn.disabled = !data.exists;
+    fieldDraft.checked = !!data.frontmatter.draft;
+  }
+
   function renderForm() {
     if (!state.langData) {
       editorForm.hidden = true;
@@ -198,22 +222,14 @@
     editorForm.hidden = false;
     ensureBodyEditor();
 
-    langTabs.querySelectorAll(".lang-tab").forEach((btn) => {
-      const lang = btn.dataset.lang;
-      btn.classList.toggle("active", lang === state.activeLang);
-      btn.classList.toggle("has-content", !!(state.langData[lang] && state.langData[lang].exists));
-    });
-
+    refreshLangChrome();
     const data = state.langData[state.activeLang];
-    langMissingNote.hidden = data.exists;
-    translateFromZhBtn.hidden = state.activeLang === "zh";
 
     fieldTitle.value = data.frontmatter.title || "";
     fieldDate.value = toDatetimeLocal(data.frontmatter.date);
     fieldLocation.value = data.frontmatter.location || "";
     fieldCover.value = data.frontmatter.cover || "";
     fieldExcerpt.value = data.frontmatter.excerpt || "";
-    fieldDraft.checked = !!data.frontmatter.draft;
     bodyEditor.setMarkdown(data.body || "");
 
     if (data.frontmatter.cover) {
@@ -222,8 +238,6 @@
     } else {
       coverPreview.hidden = true;
     }
-
-    deleteLangBtn.disabled = !data.exists;
   }
 
   function setField(key, value) {
@@ -427,10 +441,11 @@
     if (!zh || !zh.frontmatter.title) { alert("請先建立中文版本內容"); return; }
     const targetLang = state.activeLang;
     if (targetLang === "zh") return;
+    const data = state.langData[targetLang];
+    if (data.exists && !confirm(`「${targetLang}」語言版本已經有內容，重新翻譯會覆蓋目前的標題、摘要與正文。確定要繼續嗎？`)) return;
     setStatus("翻譯中...");
     try {
       const fields = await translateFields("zh", targetLang, zh);
-      const data = state.langData[targetLang];
       data.frontmatter.title = fields.title;
       data.frontmatter.excerpt = fields.excerpt;
       data.body = fields.body;
@@ -530,14 +545,9 @@
       // cover preview from the URLs that were just saved, which aren't
       // publicly servable yet (the site hasn't rebuilt) — undoing the
       // instant local preview and flashing to a broken image for no
-      // reason. Only the bits that actually changed need updating.
-      langTabs.querySelectorAll(".lang-tab").forEach((btn) => {
-        const btnLang = btn.dataset.lang;
-        btn.classList.toggle("has-content", !!(state.langData[btnLang] && state.langData[btnLang].exists));
-      });
-      langMissingNote.hidden = data.exists;
-      deleteLangBtn.disabled = !data.exists;
-      fieldDraft.checked = !!data.frontmatter.draft;
+      // reason. refreshLangChrome() only touches the bits that actually
+      // need updating (has-content dots, missing-language note, etc).
+      refreshLangChrome();
     } catch (err) {
       setStatus("");
       alert("儲存失敗：" + err.message);
