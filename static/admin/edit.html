@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>後台管理 · EnHe</title>
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<div id="authLoading" class="auth-loading">載入中...</div>
+
+<div id="appScreen" class="app-screen" hidden>
+  <header class="app-header">
+    <span class="app-title">EnHe 後台管理</span>
+    <div class="app-header-actions">
+      <span id="statusMsg" class="status-msg"></span>
+      <button id="logoutBtn" class="btn btn-ghost">登出</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <button id="newPostBtn" class="btn btn-primary btn-block">+ 新增文章</button>
+      <input type="text" id="searchBox" class="search-box" placeholder="搜尋文章...">
+      <div id="postList" class="post-list"></div>
+    </aside>
+
+    <main class="editor">
+      <div id="editorEmpty" class="editor-empty">在左側選擇文章，或新增一篇。</div>
+
+      <div id="editorForm" class="editor-form" hidden>
+        <div class="lang-tabs" id="langTabs">
+          <button class="lang-tab" data-lang="zh">中文</button>
+          <button class="lang-tab" data-lang="en">EN</button>
+          <button class="lang-tab" data-lang="ja">日本語</button>
+        </div>
+
+        <div id="langMissingNote" class="lang-missing-note" hidden>
+          此語言版本尚未建立。
+          <button id="translateFromZhBtn" class="btn btn-small">從中文翻譯建議</button>
+        </div>
+
+        <label>標題
+          <input type="text" id="fieldTitle">
+        </label>
+
+        <div class="field-row">
+          <label>日期
+            <input type="datetime-local" id="fieldDate">
+          </label>
+          <label>地點
+            <input type="text" id="fieldLocation">
+          </label>
+        </div>
+
+        <label>封面圖片
+          <div class="image-field">
+            <input type="text" id="fieldCover" placeholder="/uploads/xxx.jpg">
+            <button type="button" id="coverUploadBtn" class="btn btn-small">上傳封面</button>
+            <input type="file" id="coverUploadInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <img id="coverPreview" class="cover-preview" hidden>
+        </label>
+
+        <label>摘要
+          <textarea id="fieldExcerpt" rows="2"></textarea>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="fieldDraft">
+          草稿（不會出現在正式站台）
+        </label>
+
+        <label>
+          內文（Markdown）
+          <div class="body-toolbar">
+            <button type="button" id="bodyImageBtn" class="btn btn-small">插入圖片</button>
+            <input type="file" id="bodyImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <textarea id="fieldBody" rows="18" class="body-textarea"></textarea>
+        </label>
+
+        <div class="editor-actions">
+          <button id="saveDraftBtn" class="btn">儲存草稿</button>
+          <button id="publishBtn" class="btn btn-primary">發布</button>
+          <button id="deleteLangBtn" class="btn btn-danger">刪除此語言版本</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="/admin/admin.js"></script>
+</body>
+</html>
