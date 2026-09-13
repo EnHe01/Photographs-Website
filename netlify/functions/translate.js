@@ -7,14 +7,16 @@ const DEEPL_SOURCE = { en: "EN", ja: "JA", zh: "ZH" };
 async function deeplTranslate(texts, sourceLang, targetLang) {
   const apiKey = requireEnv("DEEPL_API_KEY");
   const params = new URLSearchParams();
-  params.append("auth_key", apiKey);
   params.append("source_lang", DEEPL_SOURCE[sourceLang]);
   params.append("target_lang", DEEPL_TARGET[targetLang]);
   texts.forEach((t) => params.append("text", t || ""));
 
   const res = await fetch("https://api-free.deepl.com/v2/translate", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `DeepL-Auth-Key ${apiKey}`,
+    },
     body: params.toString(),
   });
   if (!res.ok) throw new HttpError(res.status, `DeepL request failed: ${await res.text()}`);
