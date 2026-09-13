@@ -171,13 +171,27 @@ button.btn:disabled { opacity: 0.5; cursor: default; }
 .image-field input { flex: 1; }
 .cover-preview { max-width: 200px; max-height: 130px; object-fit: cover; border-radius: 3px; margin-top: 0.5rem; }
 
-.body-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
-.body-textarea { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85rem; line-height: 1.6; }
+.body-editor { border-radius: 3px; overflow: hidden; border: 1px solid rgba(240,236,228,0.15); }
+.body-editor .toastui-editor-defaultUI { border: none; }
 
 .editor-actions { display: flex; gap: 0.7rem; padding-top: 0.5rem; border-top: 1px solid rgba(240,236,228,0.1); }
+
+/* Upload progress widget, shown while an image (cover or body) is uploading */
+.upload-indicator {
+  position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 500;
+  display: flex; align-items: center; gap: 0.8rem;
+  background: #1e1c19; border: 1px solid rgba(240,236,228,0.15); border-radius: 4px;
+  padding: 0.7rem 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.upload-indicator img { width: 48px; height: 48px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+.upload-indicator-body { display: flex; flex-direction: column; gap: 0.4rem; min-width: 160px; }
+.upload-progress-track { width: 100%; height: 4px; background: rgba(240,236,228,0.12); border-radius: 2px; overflow: hidden; }
+.upload-progress-fill { height: 100%; width: 0%; background: #d4a853; transition: width 0.15s ease; }
+.upload-progress-text { font-size: 0.72rem; color: rgba(240,236,228,0.6); }
 
 @media (max-width: 760px) {
   .app-body { flex-direction: column; }
   .sidebar { width: auto; border-right: none; border-bottom: 1px solid rgba(240,236,228,0.1); max-height: 40vh; }
   .field-row { flex-direction: column; }
+  .upload-indicator { left: 1rem; right: 1rem; bottom: 1rem; }
 }

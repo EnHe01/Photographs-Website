@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>後台管理 · EnHe</title>
+<link rel="stylesheet" href="/admin/vendor/toastui-editor/toastui-editor.min.css">
+<link rel="stylesheet" href="/admin/vendor/toastui-editor/toastui-editor-dark.min.css">
 <link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body>
@@ -74,12 +76,8 @@
         </label>
 
         <label>
-          內文（Markdown）
-          <div class="body-toolbar">
-            <button type="button" id="bodyImageBtn" class="btn btn-small">插入圖片</button>
-            <input type="file" id="bodyImageInput" accept="image/jpeg,image/png,image/webp" hidden>
-          </div>
-          <textarea id="fieldBody" rows="18" class="body-textarea"></textarea>
+          內文
+          <div id="fieldBodyEditor" class="body-editor"></div>
         </label>
 
         <div class="editor-actions">
@@ -90,8 +88,17 @@
       </div>
     </main>
   </div>
+
+  <div id="uploadIndicator" class="upload-indicator" hidden>
+    <img id="uploadThumb" alt="">
+    <div class="upload-indicator-body">
+      <div class="upload-progress-track"><div id="uploadProgressFill" class="upload-progress-fill"></div></div>
+      <span id="uploadProgressText" class="upload-progress-text"></span>
+    </div>
+  </div>
 </div>
 
+<script src="/admin/vendor/toastui-editor/toastui-editor.min.js"></script>
 <script src="/admin/admin.js"></script>
 </body>
 </html>
