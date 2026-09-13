@@ -343,6 +343,24 @@
       previewStyle: "vertical",
       theme: "dark",
       placeholder: "開始寫內文...",
+      // Same as Toast UI's default toolbar, minus "heading". Its heading
+      // dropdown has a real bug (not something introduced by this
+      // integration): it doesn't close on an outside click like its other
+      // popups do, closing instead requires reaching into the editor's
+      // internal eventEmitter — and doing that from here to force it
+      // closed kept causing new problems (the popup visually overlaps the
+      // content so "click into content" == "click the popup", and its
+      // close path also steals focus back to the toolbar, breaking
+      // typing right after). Link/image use the same popup mechanism but
+      // close correctly via their own Cancel/OK buttons, so only heading
+      // needs to go — everything else here is unaffected.
+      toolbarItems: [
+        ["bold", "italic", "strike"],
+        ["hr", "quote"],
+        ["ul", "ol", "task", "indent", "outdent"],
+        ["table", "image", "link"],
+        ["code", "codeblock"],
+      ],
       hooks: {
         addImageBlobHook: async (blob, callback) => {
           const filename = blob.name || `image.${extFromMimeType(blob.type)}`;
@@ -357,47 +375,6 @@
     });
     bodyEditor.on("change", () => {
       if (state.langData) state.langData[state.activeLang].body = bodyEditor.getMarkdown();
-    });
-
-    // Toast UI's heading dropdown (and similar popups) don't close on an
-    // outside click the way a normal dropdown would — closing goes through
-    // the editor's own eventEmitter ('closePopup') instead, and nothing
-    // wires that up to outside clicks. Without this, clicking into the
-    // content to start typing (or clicking one of the popup's own options,
-    // which visually overlaps the content below it) leaves it stuck open.
-    //
-    // Only exclude clicks on the toolbar's toggle buttons themselves —
-    // the popup is actually a DOM descendant of .toastui-editor-toolbar
-    // (floated over the content via CSS), so excluding the whole toolbar
-    // would also exclude clicks on the popup's own options.
-    //
-    // The emit is deferred a tick so the editor's own click handling (e.g.
-    // applying the selected heading level, which touches toolbar button
-    // state) finishes first — emitting synchronously gets clobbered by
-    // that follow-up render.
-    //
-    // Only emit when a popup is actually visibly open: 'closePopup' also
-    // returns focus to the toolbar as a side effect, which — if fired on
-    // every ordinary click regardless of whether anything was open —
-    // steals focus right back out of the content area after clicking in
-    // to place the cursor, breaking typing entirely.
-    document.addEventListener("click", (e) => {
-      if (e.target.closest(".toastui-editor-toolbar-icons")) return;
-      const isPopupOpen = Array.from(fieldBodyEditor.querySelectorAll(".toastui-editor-popup, .toastui-editor-dropdown-toolbar"))
-        .some((popup) => getComputedStyle(popup).display !== "none");
-      if (!isPopupOpen) return;
-      // If the click that's dismissing the popup was itself inside the
-      // editor (e.g. on a heading option, or elsewhere in the content),
-      // bring focus back to the content afterwards — closePopup's own
-      // focus-to-toolbar side effect would otherwise leave the cursor on
-      // the toolbar button instead of where the user was about to type.
-      // A click on some other field entirely (title, excerpt, ...) is left
-      // alone — that field's own focus should win, not get yanked back.
-      const clickedInsideEditor = fieldBodyEditor.contains(e.target);
-      setTimeout(() => {
-        bodyEditor.eventEmitter.emit("closePopup");
-        if (clickedInsideEditor) bodyEditor.focus();
-      }, 0);
     });
   }
 
