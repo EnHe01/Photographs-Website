@@ -43,6 +43,11 @@
   };
 
   let bodyEditor = null; // lazily-created toastui.Editor instance
+  // Maps a body image's local dataUrl (what's actually shown in the WYSIWYG
+  // view, so it renders instantly without waiting on a deploy) to its real
+  // /uploads/... path, so saved markdown gets the short real URL instead of
+  // a multi-megabyte embedded image. See ensureBodyEditor().
+  const bodySrcSwaps = new Map();
 
   function setStatus(msg) {
     statusMsg.textContent = msg || "";
@@ -298,14 +303,17 @@
   }
 
   // Shared upload flow: shows the thumbnail immediately, drives the
-  // progress bar, and returns the final { url }.
+  // progress bar, and returns the final { url, dataUrl }. dataUrl is the
+  // original file re-encoded locally — it's what callers should use for an
+  // instant preview, since url (the real /uploads/... path) only actually
+  // becomes servable once the site's next build/deploy picks it up.
   async function uploadImageWithFeedback(file, filename) {
     if (file.size > 15 * 1024 * 1024) throw new Error("圖片過大（上限 15MB）");
     const dataUrl = await readAsDataURL(file);
     showUploadIndicator(dataUrl);
     try {
       const res = await uploadDataUrl(dataUrl, filename, updateUploadProgress);
-      return res;
+      return { url: res.url, dataUrl };
     } finally {
       hideUploadIndicator();
     }
@@ -320,7 +328,9 @@
       const res = await uploadImageWithFeedback(file, file.name);
       fieldCover.value = res.url;
       setField("cover", res.url);
-      coverPreview.src = res.url;
+      // Use the local dataUrl (not res.url) for the preview thumbnail so it
+      // shows immediately instead of a broken image until the next deploy.
+      coverPreview.src = res.dataUrl;
       coverPreview.hidden = false;
     } catch (err) {
       alert("上傳失敗：" + err.message);
@@ -366,7 +376,13 @@
           const filename = blob.name || `image.${extFromMimeType(blob.type)}`;
           try {
             const res = await uploadImageWithFeedback(blob, filename);
-            callback(res.url, filename);
+            // Insert using the local dataUrl, not res.url — the real path
+            // isn't servable until the next deploy, so inserting it
+            // directly would just show a broken image in the meantime.
+            // The change handler below swaps it for the real URL when
+            // saving, so the stored post never keeps the embedded image.
+            bodySrcSwaps.set(res.dataUrl, res.url);
+            callback(res.dataUrl, filename);
           } catch (err) {
             alert("上傳失敗：" + err.message);
           }
@@ -374,7 +390,12 @@
       },
     });
     bodyEditor.on("change", () => {
-      if (state.langData) state.langData[state.activeLang].body = bodyEditor.getMarkdown();
+      if (!state.langData) return;
+      let markdown = bodyEditor.getMarkdown();
+      for (const [dataUrl, realUrl] of bodySrcSwaps) {
+        markdown = markdown.split(dataUrl).join(realUrl);
+      }
+      state.langData[state.activeLang].body = markdown;
     });
   }
 
