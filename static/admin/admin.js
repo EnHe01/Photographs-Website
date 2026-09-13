@@ -358,6 +358,18 @@
     bodyEditor.on("change", () => {
       if (state.langData) state.langData[state.activeLang].body = bodyEditor.getMarkdown();
     });
+
+    // Toast UI's heading dropdown (and a couple of its other popups) don't
+    // close themselves on an outside click the way a normal dropdown would
+    // — clicking into the content to start typing, or clicking anywhere
+    // else on the page, leaves them stuck open. Force them closed on any
+    // click outside the toolbar (clicks inside the toolbar, including the
+    // button that opened a popup, are left to the editor's own handling).
+    document.addEventListener("click", (e) => {
+      const toolbar = fieldBodyEditor.querySelector(".toastui-editor-toolbar");
+      if (toolbar && toolbar.contains(e.target)) return;
+      bodyEditor.eventEmitter.emit("closePopup");
+    });
   }
 
   // ---- translate ----
