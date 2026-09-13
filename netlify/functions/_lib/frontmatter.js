@@ -5,6 +5,13 @@ function parse(fileText) {
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(fileText);
   if (!match) return { frontmatter: {}, body: fileText };
   const frontmatter = yaml.load(match[1]) || {};
+  // js-yaml auto-detects ISO-looking scalars (our `date` field) and parses
+  // them into native Date objects instead of leaving them as strings.
+  // Normalize back to ISO strings so callers can rely on `date` being a
+  // string (e.g. for .localeCompare-based sorting).
+  for (const key of Object.keys(frontmatter)) {
+    if (frontmatter[key] instanceof Date) frontmatter[key] = frontmatter[key].toISOString();
+  }
   return { frontmatter, body: match[2] };
 }
 
