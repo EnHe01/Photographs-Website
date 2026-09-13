@@ -375,9 +375,29 @@
     // applying the selected heading level, which touches toolbar button
     // state) finishes first — emitting synchronously gets clobbered by
     // that follow-up render.
+    //
+    // Only emit when a popup is actually visibly open: 'closePopup' also
+    // returns focus to the toolbar as a side effect, which — if fired on
+    // every ordinary click regardless of whether anything was open —
+    // steals focus right back out of the content area after clicking in
+    // to place the cursor, breaking typing entirely.
     document.addEventListener("click", (e) => {
       if (e.target.closest(".toastui-editor-toolbar-icons")) return;
-      setTimeout(() => bodyEditor.eventEmitter.emit("closePopup"), 0);
+      const isPopupOpen = Array.from(fieldBodyEditor.querySelectorAll(".toastui-editor-popup, .toastui-editor-dropdown-toolbar"))
+        .some((popup) => getComputedStyle(popup).display !== "none");
+      if (!isPopupOpen) return;
+      // If the click that's dismissing the popup was itself inside the
+      // editor (e.g. on a heading option, or elsewhere in the content),
+      // bring focus back to the content afterwards — closePopup's own
+      // focus-to-toolbar side effect would otherwise leave the cursor on
+      // the toolbar button instead of where the user was about to type.
+      // A click on some other field entirely (title, excerpt, ...) is left
+      // alone — that field's own focus should win, not get yanked back.
+      const clickedInsideEditor = fieldBodyEditor.contains(e.target);
+      setTimeout(() => {
+        bodyEditor.eventEmitter.emit("closePopup");
+        if (clickedInsideEditor) bodyEditor.focus();
+      }, 0);
     });
   }
 
