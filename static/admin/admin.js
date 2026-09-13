@@ -337,6 +337,19 @@
     }
   });
 
+  // Reads the body editor's current markdown with every known local
+  // dataUrl swapped back for its real /uploads/... URL. Used both by the
+  // change handler (to keep state.langData in sync as the user types) and
+  // directly by saveCurrent() right before it builds the save payload, so
+  // saving never depends on a "change" event having already fired first.
+  function currentBodyMarkdown() {
+    let markdown = bodyEditor.getMarkdown();
+    for (const [dataUrl, realUrl] of bodySrcSwaps) {
+      markdown = markdown.split(dataUrl).join(realUrl);
+    }
+    return markdown;
+  }
+
   // Creates the WYSIWYG body editor the first time it's needed (needs a
   // visible, sized container, so this is called from renderForm() right
   // after editorForm is unhidden rather than at page load). Image
@@ -391,11 +404,7 @@
     });
     bodyEditor.on("change", () => {
       if (!state.langData) return;
-      let markdown = bodyEditor.getMarkdown();
-      for (const [dataUrl, realUrl] of bodySrcSwaps) {
-        markdown = markdown.split(dataUrl).join(realUrl);
-      }
-      state.langData[state.activeLang].body = markdown;
+      state.langData[state.activeLang].body = currentBodyMarkdown();
     });
   }
 
@@ -489,6 +498,11 @@
     const data = state.langData[lang];
     if (!data.frontmatter.title || !data.frontmatter.title.trim()) { alert("請輸入標題"); return; }
 
+    // Read fresh from the editor rather than trusting state.langData to
+    // already be in sync — its "change" handler updates it, but nothing
+    // here should depend on that having already fired.
+    data.body = currentBodyMarkdown();
+
     const slug = state.activeSlug || slugify(data.frontmatter.title, data.frontmatter.date);
     const fm = Object.assign({}, data.frontmatter);
     fm.source_lang = fm.source_lang || lang;
@@ -512,7 +526,18 @@
       }
       setStatus(publish ? "已儲存並觸發發布" : "已儲存草稿");
       await refreshPostList();
-      renderForm();
+      // Not a full renderForm(): that would reload the body editor and
+      // cover preview from the URLs that were just saved, which aren't
+      // publicly servable yet (the site hasn't rebuilt) — undoing the
+      // instant local preview and flashing to a broken image for no
+      // reason. Only the bits that actually changed need updating.
+      langTabs.querySelectorAll(".lang-tab").forEach((btn) => {
+        const btnLang = btn.dataset.lang;
+        btn.classList.toggle("has-content", !!(state.langData[btnLang] && state.langData[btnLang].exists));
+      });
+      langMissingNote.hidden = data.exists;
+      deleteLangBtn.disabled = !data.exists;
+      fieldDraft.checked = !!data.frontmatter.draft;
     } catch (err) {
       setStatus("");
       alert("儲存失敗：" + err.message);
