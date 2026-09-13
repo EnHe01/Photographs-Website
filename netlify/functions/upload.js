@@ -3,31 +3,15 @@ const sharp = require("sharp");
 const { json, handle, HttpError } = require("./_lib/response");
 const { requireAuth } = require("./_lib/auth");
 const github = require("./_lib/github");
+const { watermarkOverlays } = require("./_lib/watermark");
 
 const UPLOAD_DIR = "static/uploads";
-const WATERMARK_TEXT = "© EnHe";
 const MAX_DIMENSION = 2400;
 const ALLOWED_EXT = { jpg: "jpeg", jpeg: "jpeg", png: "png", webp: "webp" };
 
 function extOf(filename) {
   const m = /\.([a-zA-Z0-9]+)$/.exec(filename || "");
   return m ? m[1].toLowerCase() : "";
-}
-
-function watermarkSvg(width, height) {
-  const fontSize = Math.max(12, Math.round(Math.min(width, height) * 0.025));
-  const margin = Math.round(Math.min(width, height) * 0.02);
-  const x = width - margin;
-  const y = height - margin;
-  const escaped = WATERMARK_TEXT.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  return Buffer.from(`
-    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <text x="${x + 1}" y="${y + 1}" font-family="sans-serif" font-size="${fontSize}"
-            text-anchor="end" fill="black" fill-opacity="0.24">${escaped}</text>
-      <text x="${x}" y="${y}" font-family="sans-serif" font-size="${fontSize}"
-            text-anchor="end" fill="white" fill-opacity="0.55">${escaped}</text>
-    </svg>
-  `);
 }
 
 async function processImage(buffer, format, applyWatermark) {
@@ -37,7 +21,8 @@ async function processImage(buffer, format, applyWatermark) {
   let height = meta.height;
 
   if (applyWatermark) {
-    image = image.composite([{ input: watermarkSvg(width, height), top: 0, left: 0 }]);
+    const overlays = await watermarkOverlays(width, height);
+    if (overlays.length) image = image.composite(overlays);
   }
 
   if (Math.max(width, height) > MAX_DIMENSION) {
