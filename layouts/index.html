@@ -906,7 +906,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   <div class="lang-switch">
     <button class="lang-current" id="langBtn">{{ if eq .Site.Language.Lang "zh" }}中文{{ else if eq .Site.Language.Lang "en" }}EN{{ else }}日本語{{ end }} ▾</button>
     <div class="lang-dropdown" id="langDropdown">
-      <a href="/" class="{{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
+      <a href="/zh/" class="{{ if eq .Site.Language.Lang "zh" }}active{{ end }}">中文</a>
       <a href="/en/" class="{{ if eq .Site.Language.Lang "en" }}active{{ end }}">EN</a>
       <a href="/ja/" class="{{ if eq .Site.Language.Lang "ja" }}active{{ end }}">日本語</a>
     </div>
