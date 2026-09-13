@@ -304,6 +304,19 @@
   });
 
   // ---- translate ----
+  // Calls /translate and returns the translated { title, excerpt, body }.
+  async function translateFields(sourceLang, targetLang, source) {
+    const res = await api("/translate", {
+      method: "POST",
+      body: JSON.stringify({
+        sourceLang,
+        targetLang,
+        fields: { title: source.frontmatter.title, excerpt: source.frontmatter.excerpt || "", body: source.body || "" },
+      }),
+    });
+    return res.fields;
+  }
+
   translateFromZhBtn.addEventListener("click", async () => {
     const zh = state.langData.zh;
     if (!zh || !zh.frontmatter.title) { alert("請先建立中文版本內容"); return; }
@@ -311,18 +324,11 @@
     if (targetLang === "zh") return;
     setStatus("翻譯中...");
     try {
-      const res = await api("/translate", {
-        method: "POST",
-        body: JSON.stringify({
-          sourceLang: "zh",
-          targetLang,
-          fields: { title: zh.frontmatter.title, excerpt: zh.frontmatter.excerpt || "", body: zh.body || "" },
-        }),
-      });
+      const fields = await translateFields("zh", targetLang, zh);
       const data = state.langData[targetLang];
-      data.frontmatter.title = res.fields.title;
-      data.frontmatter.excerpt = res.fields.excerpt;
-      data.body = res.fields.body;
+      data.frontmatter.title = fields.title;
+      data.frontmatter.excerpt = fields.excerpt;
+      data.body = fields.body;
       if (!data.frontmatter.location) data.frontmatter.location = zh.frontmatter.location;
       if (!data.frontmatter.cover) data.frontmatter.cover = zh.frontmatter.cover;
       if (!toDatetimeLocal(data.frontmatter.date)) data.frontmatter.date = zh.frontmatter.date;
@@ -333,6 +339,38 @@
       alert("翻譯失敗：" + err.message);
     }
   });
+
+  // Publishing a post auto-translates + auto-publishes any language that has
+  // no file yet, using the just-published language as the source. A language
+  // that already exists (auto-translated before, or hand-written) is never
+  // touched again automatically — only a fully missing file triggers a
+  // DeepL call, so this costs at most one translation per language per post.
+  async function autoTranslateMissing(sourceLang) {
+    const source = state.langData[sourceLang];
+    const targets = LANGS.filter((l) => l !== sourceLang && !state.langData[l].exists);
+    for (const targetLang of targets) {
+      setStatus(`自動翻譯 ${targetLang} 中...`);
+      try {
+        const fields = await translateFields(sourceLang, targetLang, source);
+        const data = state.langData[targetLang];
+        data.frontmatter = Object.assign({}, source.frontmatter, {
+          title: fields.title,
+          excerpt: fields.excerpt,
+          draft: false,
+          source_lang: sourceLang,
+        });
+        data.body = fields.body;
+        const res = await api("/posts", {
+          method: "POST",
+          body: JSON.stringify({ lang: targetLang, slug: state.activeSlug, frontmatter: data.frontmatter, body: data.body }),
+        });
+        data.sha = res.sha;
+        data.exists = true;
+      } catch (err) {
+        alert(`自動翻譯 ${targetLang} 失敗：${err.message}（可以之後在該語言分頁手動翻譯補上）`);
+      }
+    }
+  }
 
   // ---- save / delete ----
   async function saveCurrent(publish) {
@@ -357,6 +395,7 @@
       state.activeSlug = slug;
 
       if (publish) {
+        await autoTranslateMissing(lang);
         setStatus("發布中...");
         await api("/publish", { method: "POST" });
       }
