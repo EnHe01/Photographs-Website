@@ -21,8 +21,14 @@ async function processImage(buffer, format, applyWatermark) {
   let height = meta.height;
 
   if (applyWatermark) {
-    const overlays = await watermarkOverlays(width, height);
-    if (overlays.length) image = image.composite(overlays);
+    try {
+      const overlays = await watermarkOverlays(width, height);
+      if (overlays.length) image = image.composite(overlays);
+    } catch (err) {
+      // Never let a watermark failure block the upload itself — the photo
+      // still needs to get published even if the watermark can't be drawn.
+      console.error("watermark failed, uploading without it:", err);
+    }
   }
 
   if (Math.max(width, height) > MAX_DIMENSION) {

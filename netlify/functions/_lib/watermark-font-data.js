@@ -1,10 +1,11 @@
 // Subsetted DejaVu Sans (printable ASCII + ©), base64-encoded TTF.
-// Netlify Functions run without any system fonts installed, so sharp/libvips
-// cannot resolve a generic font-family name (e.g. "sans-serif") at all — every
-// glyph renders as a tofu box. Embedding the font bytes directly here and
-// writing them to a file at runtime (see watermark-font.js's consumer) lets
-// sharp's text renderer load a font by explicit file path, which works
-// regardless of what fonts (if any) the runtime has installed.
+//
+// NOT loaded at runtime by watermark.js — Netlify Functions turned out not
+// to reliably support sharp/Pango text rendering at all (see
+// watermark-glyph-data.js), so the watermark is now a pre-rasterized PNG
+// bitmap instead of text rendered per-request. This font is kept only as
+// the source used to regenerate that PNG if the watermark text ever needs
+// to change (see the regeneration command in watermark-glyph-data.js).
 //
 // Regenerate with (needs `pip install fonttools`):
 //   python3 -m fontTools.subset DejaVuSans.ttf \
