@@ -15,10 +15,33 @@ function extOf(filename) {
 }
 
 async function processImage(buffer, format, applyWatermark) {
-  let image = sharp(buffer, { failOn: "none" }).rotate(); // rotate() normalizes EXIF orientation
-  const meta = await image.metadata();
+  // .rotate() normalizes EXIF orientation, but sharp's .metadata() reports
+  // the RAW pre-rotation width/height even on a pipeline that already has
+  // .rotate() chained — for any photo that actually needs rotating (i.e.
+  // almost every portrait phone/camera shot, which is stored as landscape
+  // pixels plus an EXIF rotation tag), that swapped width/height silently
+  // broke both the resize target and the watermark's position: the
+  // watermark ended up composited past the real (rotated) image's edge,
+  // which sharp neither draws nor errors on — it just vanishes. Materialize
+  // the rotation first so every measurement after this reflects the image
+  // as it will actually be rendered.
+  const rotatedBuffer = await sharp(buffer, { failOn: "none" }).rotate().toBuffer();
+  const meta = await sharp(rotatedBuffer).metadata();
   let width = meta.width;
   let height = meta.height;
+  let image = sharp(rotatedBuffer);
+
+  // Resizing before watermarking (rather than after) means the watermark
+  // and the composite it's drawn onto are both computed at the final,
+  // typically much smaller size — cheaper, and keeps the watermark's
+  // position/size math working from the dimensions the image actually ends
+  // up at.
+  if (Math.max(width, height) > MAX_DIMENSION) {
+    const ratio = MAX_DIMENSION / Math.max(width, height);
+    width = Math.round(width * ratio);
+    height = Math.round(height * ratio);
+    image = image.resize(width, height);
+  }
 
   if (applyWatermark) {
     try {
@@ -29,13 +52,6 @@ async function processImage(buffer, format, applyWatermark) {
       // still needs to get published even if the watermark can't be drawn.
       console.error("watermark failed, uploading without it:", err);
     }
-  }
-
-  if (Math.max(width, height) > MAX_DIMENSION) {
-    const ratio = MAX_DIMENSION / Math.max(width, height);
-    width = Math.round(width * ratio);
-    height = Math.round(height * ratio);
-    image = image.resize(width, height);
   }
 
   if (format === "jpeg") image = image.jpeg({ quality: 82, mozjpeg: true });
