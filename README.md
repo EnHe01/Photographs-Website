@@ -14,7 +14,7 @@
 - 帳號密碼登入（JWT + httpOnly cookie，密碼以 bcrypt hash 儲存）
 - 文章列表 / 建立 / 編輯 / 刪除，三語（中/英/日）分頁管理
 - 圖片上傳，Netlify Function 內用 `sharp` 自動加浮水印（取代原本 build 時
-  跑的 `scripts/watermark.py`）
+  跑的 Python 浮水印 script，已刪除）
 - 「從中文翻譯建議」按鈕，呼叫 DeepL API 產生英文/日文草稿，人工確認後再儲存
 - 草稿（`draft: true`）與發布（儲存 + 觸發 Netlify Build Hook）
 
@@ -72,13 +72,11 @@ static/admin/
 
 ### 已知取捨 / 之後可以做的事
 
-- `scripts/watermark.py`（build 時跑）不再被 `netlify.toml` 呼叫，因為新上傳
-  的圖片在後台上傳當下就已經加好浮水印；舊圖片維持原樣，不會被重複加浮水印。
-  這支 script 還留著，之後如果想要批次處理舊圖片可以手動跑。
+- 浮水印只在後台上傳當下加（`netlify/functions/_lib/watermark.js`）。舊圖片
+  已在 #23 一次補齊，原本的 Python 浮水印 script 已刪除。
 - `.github/workflows/translate.yml` 原本會在 `content/zh/blog` 有變動時自動
   整篇重新翻譯覆蓋 `content/en`、`content/ja`，這跟後台「人工確認翻譯」的
   流程會互相打架（可能覆蓋掉你在後台手動修過的翻譯），所以已經改成只能手動
   觸發（workflow_dispatch）。如果不需要保留可以直接刪除這個 workflow。
 - Markdown 內文是純文字框（無即時預覽），要看效果需要儲存後到前台頁面看。
-- 目前圖片上傳沒有做額外壓縮（只有原本 `watermark.py` 就有的「長邊超過
-  2400px 才縮小」邏輯），如果要更嚴格的檔案大小控管可以之後再加。
+- 目前圖片上傳沒有做額外壓縮（只有「長邊超過 2400px 才縮小」的邏輯），如果要更嚴格的檔案大小控管可以之後再加。

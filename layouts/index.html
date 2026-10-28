@@ -1020,14 +1020,15 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   <div class="gallery-track-wrap reveal">
     <div class="gallery-track" id="galleryTrack">
       {{ range where .Site.RegularPages "Section" "blog" }}
-      {{ if .Params.cover }}
+      {{ $cover := .Params.cover }}
+      {{ if $cover }}
       <div class="gallery-item">
         <img src="{{ partialCached "img-url.html" .Params.cover .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
       {{ end }}
       {{ $images := findRE `/uploads/[^)"]+\.(jpg|jpeg|png|webp)` .RawContent }}
       {{ range $images }}
-      {{ if ne . $.Params.cover }}
+      {{ if ne . $cover }}
       <div class="gallery-item">
         <img src="{{ partialCached "img-url.html" . . }}" alt="" loading="lazy">
       </div>
@@ -1064,10 +1065,10 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div class="collab-right reveal">
     <div class="collab-img">
-      <img src="{{ partialCached "img-url.html" .Site.Data.collab.image_left .Site.Data.collab.image_left }}" alt="">
+      <img src="{{ partialCached "img-url.html" hugo.Data.collab.image_left hugo.Data.collab.image_left }}" alt="">
     </div>
     <div class="collab-img">
-      <img src="{{ partialCached "img-url.html" .Site.Data.collab.image_right .Site.Data.collab.image_right }}" alt="">
+      <img src="{{ partialCached "img-url.html" hugo.Data.collab.image_right hugo.Data.collab.image_right }}" alt="">
     </div>
   </div>
 </section>
@@ -1077,7 +1078,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     <span class="footer-logo">EnHe</span>
     <span class="footer-sub">Notes from the Road</span>
   </div>
-  <p>{{ .Site.Params.footer_copy }}</p>
+  <p>© {{ now.Year }} · {{ .Site.Params.footer_copy }}</p>
   <div class="footer-social">
     <a href="https://www.instagram.com/en1he_" target="_blank">Instagram</a>
     <a href="https://xhslink.com/m/mzBpdbBbHu" target="_blank">RedNote</a>

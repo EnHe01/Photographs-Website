@@ -79,11 +79,9 @@ img {
 <section class="post-hero">
   <img src="{{ partialCached "img-url.html" .Params.cover .Params.cover }}" alt="{{ .Title }}">
   <div class="post-hero-content">
-    {{ if .Params.tags }}
-        <div class="post-tags">{{ $tags := split .Params.location "," }}{{ range $tags }}{{ $t := . | htmlEscape }}<a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>{{ end }}</div>
-        {{ else }}
-        <div class="post-tags">{{ $tags := split .Params.location "," }}{{ range $tags }}{{ $t := . | htmlEscape }}<a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>{{ end }}</div>
-        {{ end }}
+        {{- /* Each location part links to this language's post list, pre-filtered by that tag. The value matches the list page's tag buttons (trimmed, lowercased). */}}
+        {{ $blog := printf "/%s/blog/" .Site.Language.Lang }}
+        <div class="post-tags">{{ range split .Params.location "," }}{{ $t := strings.TrimSpace . }}{{ if $t }}<a href="{{ $blog }}?tag={{ $t | lower | urlquery }}" class="post-tag">{{ $t }}</a>{{ end }}{{ end }}</div>
     <p class="post-date">{{ .Date.Format "2006 · 01 · 02" }}</p>
     <h1 class="post-title">{{ .Title }}</h1>
   </div>
@@ -94,7 +92,7 @@ img {
 </article>
 
 <footer>
-  <p>© 2025 EnHe · Notes from the Road</p>
+  <p>© {{ now.Year }} EnHe · Notes from the Road</p>
   <span class="footer-logo">EnHe</span>
   <p>Tokyo · Beijing</p>
 </footer>

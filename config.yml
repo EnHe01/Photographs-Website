@@ -4,15 +4,10 @@ title: "EnHe"
 defaultContentLanguage: "en"
 defaultContentLanguageInSubdir: true
 
-outputs:
-  home:
-    - HTML
-    - JSON
-
 languages:
   zh:
-    languageName: "中文"
-    languageCode: "zh-CN"
+    label: "中文"
+    locale: "zh-CN"
     weight: 1
     contentDir: content/zh
     params:
@@ -25,11 +20,11 @@ languages:
       drag: "拖动浏览"
       collab_desc: "旅拍、人像、内容合作。在日本各地均可拍摄，欢迎来找我聊。"
       book: "Book a Shoot"
-      footer_copy: "© 2025 · Tokyo · Beijing"
+      footer_copy: "Tokyo · Beijing"
 
   en:
-    languageName: "EN"
-    languageCode: "en-US"
+    label: "EN"
+    locale: "en-US"
     weight: 2
     contentDir: content/en
     params:
@@ -42,11 +37,11 @@ languages:
       drag: "Drag to explore"
       collab_desc: "Portrait · Travel · Content. Available across Japan. Let's talk."
       book: "Book a Shoot"
-      footer_copy: "© 2025 · Tokyo · Beijing"
+      footer_copy: "Tokyo · Beijing"
 
   ja:
-    languageName: "日本語"
-    languageCode: "ja"
+    label: "日本語"
+    locale: "ja"
     weight: 3
     contentDir: content/ja
     params:
@@ -59,4 +54,4 @@ languages:
       drag: "スワイプして見る"
       collab_desc: "ポートレート・旅撮影・コンテンツ制作。日本全国対応。"
       book: "撮影を予約"
-      footer_copy: "© 2025 · 東京 · 北京"
+      footer_copy: "東京 · 北京"
