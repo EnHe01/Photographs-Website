@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ .Title }} · EnHe</title>
 {{ partial "head-meta.html" . }}
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{{- /* Load Google Fonts without blocking the first paint: text shows in a system font, then swaps in. */}}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap"></noscript>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --bg: #0e0e0c; --surface: #161614; --gold: #d4a853; --gold-light: #e8c97a; --white: #f0ece4; --muted: #7a7570; }
@@ -77,6 +81,7 @@ img {
   </div>
 </nav>
 
+<main>
 <section class="post-hero">
   {{ partial "img.html" (dict "src" .Params.cover "alt" .Title "sizes" "100vw" "lazy" false) }}
   <div class="post-hero-content">
@@ -91,6 +96,8 @@ img {
 <article class="post-body">
   {{ .Content }}
 </article>
+
+</main>
 
 <footer>
   <p>© {{ now.Year }} EnHe · Notes from the Road</p>
