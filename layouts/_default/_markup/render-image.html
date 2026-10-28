@@ -1,0 +1,3 @@
+{{- /* Same output as Hugo's default image rendering, but with a cache-busting URL (see partials/img-url.html). */ -}}
+<img src="{{ partialCached "img-url.html" .Destination .Destination }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }}>
+{{- /* */ -}}

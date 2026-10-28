@@ -975,7 +975,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   {{ if $first }}
   <div class="featured-post reveal">
     <div class="featured-post-img">
-      <img src="{{ $first.Params.cover }}" alt="{{ $first.Title }}">
+      <img src="{{ partialCached "img-url.html" $first.Params.cover $first.Params.cover }}" alt="{{ $first.Title }}">
     </div>
     <div class="featured-post-text">
       <p class="post-eyebrow">{{ $first.Params.location }}</p>
@@ -990,7 +990,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
     {{ range $i, $p := after 1 (first 5 $pages) }}
     <a href="{{ $p.Permalink }}" class="post-card{{ if ge $i 3 }} mobile-only{{ end }}">
       <div class="post-card-img">
-        <img src="{{ $p.Params.cover }}" alt="{{ $p.Title }}" loading="lazy">
+        <img src="{{ partialCached "img-url.html" $p.Params.cover $p.Params.cover }}" alt="{{ $p.Title }}" loading="lazy">
       </div>
       <div class="post-card-body">
         <div class="post-card-meta">
@@ -1022,14 +1022,14 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
       {{ range where .Site.RegularPages "Section" "blog" }}
       {{ if .Params.cover }}
       <div class="gallery-item">
-        <img src="{{ .Params.cover }}" alt="{{ .Title }}" loading="lazy">
+        <img src="{{ partialCached "img-url.html" .Params.cover .Params.cover }}" alt="{{ .Title }}" loading="lazy">
       </div>
       {{ end }}
       {{ $images := findRE `/uploads/[^)"]+\.(jpg|jpeg|png|webp)` .RawContent }}
       {{ range $images }}
       {{ if ne . $.Params.cover }}
       <div class="gallery-item">
-        <img src="{{ . }}" alt="" loading="lazy">
+        <img src="{{ partialCached "img-url.html" . . }}" alt="" loading="lazy">
       </div>
       {{ end }}
       {{ end }}
@@ -1064,10 +1064,10 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   </div>
   <div class="collab-right reveal">
     <div class="collab-img">
-      <img src="{{ .Site.Data.collab.image_left }}" alt="">
+      <img src="{{ partialCached "img-url.html" .Site.Data.collab.image_left .Site.Data.collab.image_left }}" alt="">
     </div>
     <div class="collab-img">
-      <img src="{{ .Site.Data.collab.image_right }}" alt="">
+      <img src="{{ partialCached "img-url.html" .Site.Data.collab.image_right .Site.Data.collab.image_right }}" alt="">
     </div>
   </div>
 </section>
