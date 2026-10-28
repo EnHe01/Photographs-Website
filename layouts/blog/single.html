@@ -77,7 +77,7 @@ img {
 </nav>
 
 <section class="post-hero">
-  <img src="{{ .Params.cover }}" alt="{{ .Title }}">
+  <img src="{{ partialCached "img-url.html" .Params.cover .Params.cover }}" alt="{{ .Title }}">
   <div class="post-hero-content">
     {{ if .Params.tags }}
         <div class="post-tags">{{ $tags := split .Params.location "," }}{{ range $tags }}{{ $t := . | htmlEscape }}<a href="/blog/?tag={{ $t | urlize }}" class="post-tag">{{ $t }}</a>{{ end }}</div>

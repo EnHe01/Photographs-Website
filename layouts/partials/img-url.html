@@ -1,0 +1,20 @@
+{{- /*
+  Cache-busting URL for an uploaded image.
+
+  netlify.toml caches /uploads/* for a year as "immutable", so when an
+  image file is rewritten in place under the same name (e.g. the watermark
+  backfill), browsers would keep showing the old cached copy. Appending a
+  short hash of the file's content (?v=xxxxxxxx) gives the image a new URL
+  whenever its content changes, and keeps the same URL when it doesn't.
+
+  Usage: {{ partialCached "img-url.html" .Params.cover .Params.cover }}
+*/ -}}
+{{- $u := . -}}
+{{- $out := $u -}}
+{{- if and $u (hasPrefix $u "/uploads/") (not (strings.Contains $u "?")) -}}
+  {{- $f := path.Join "static" $u -}}
+  {{- if fileExists $f -}}
+    {{- $out = printf "%s?v=%s" $u (substr (readFile $f | md5) 0 8) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}
