@@ -20,8 +20,8 @@
 {{- $hero := resources.Get "uploads/DSCF5165.jpeg" -}}
 {{- $heroS := $hero.Resize "1200x webp q75" -}}
 {{- $heroL := $hero.Resize (printf "%dx webp q78" $hero.Width) }}
-<link rel="preload" as="image" href="{{ $heroS.RelPermalink }}" media="(max-width: 768px)" fetchpriority="high">
-<link rel="preload" as="image" href="{{ $heroL.RelPermalink }}" media="(min-width: 769px)" fetchpriority="high">
+<link rel="preload" as="image" href="{{ $heroS.RelPermalink }}" media="(max-width: 768px)">
+<link rel="preload" as="image" href="{{ $heroL.RelPermalink }}" media="(min-width: 769px)">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -876,7 +876,7 @@ footer p { font-size: 0.74rem; color: var(--white-dim); letter-spacing: 0.1em; }
   <div class="hero-main">
     <div class="hero-top">
       <div class="hero-avatar">
-        {{ with resources.Get "uploads/avatar.jpg" }}{{ $av := .Resize "320x320 webp q80" }}<img src="{{ $av.RelPermalink }}" width="160" height="160" alt="EnHe">{{ end }}
+        {{ with resources.Get "uploads/avatar.jpg" }}{{ $av := .Resize "320x320 webp q80" }}{{- /* The avatar is the page's Largest Contentful Paint element (the hero photo is a CSS background, which LCP ignores), so fetch it first. */ -}}<img src="{{ $av.RelPermalink }}" width="160" height="160" alt="EnHe" fetchpriority="high">{{ end }}
       </div>
       <div class="hero-tagline">
         Based in Tokyo · Beijing<br>
