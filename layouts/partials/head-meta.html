@@ -1,0 +1,41 @@
+{{- /*
+  Description, share-card (Open Graph / Twitter) and language tags for every
+  page, so links shared on WeChat, LINE, Instagram, X etc. show a cover
+  image, title and summary, and search engines know which language version
+  is which.
+*/ -}}
+{{- $desc := "" -}}
+{{- $image := "" -}}
+{{- if .IsPage -}}
+  {{- $desc = .Params.excerpt | default .Summary -}}
+  {{- $image = .Params.cover -}}
+{{- else -}}
+  {{- $desc = site.Params.hero_desc -}}
+  {{- $image = "/uploads/DSCF5165.jpeg" -}}
+{{- end -}}
+{{- $desc = $desc | plainify | htmlUnescape | strings.TrimSpace | truncate 160 -}}
+{{- $title := printf "%s · EnHe" .Title -}}
+{{- if .IsHome }}{{ $title = "Notes from the Road — EnHe" }}{{ else if .IsSection }}{{ $title = printf "%s · EnHe" site.Params.all_posts }}{{ end -}}
+{{- $imageURL := "" -}}
+{{- with and $image (hasPrefix $image "/uploads/") (resources.Get (strings.TrimPrefix "/" $image)) -}}
+  {{- $imageURL = (.Resize "1200x jpg q85").Permalink -}}
+{{- end -}}
+{{- $locale := site.Language.Locale -}}
+<meta name="description" content="{{ $desc }}">
+<link rel="canonical" href="{{ .Permalink }}">
+{{- range .AllTranslations }}
+<link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
+{{- end }}
+<meta property="og:site_name" content="EnHe">
+<meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="{{ replace $locale "-" "_" }}">
+{{- with $imageURL }}
+<meta property="og:image" content="{{ . }}">
+{{- end }}
+{{- if .IsPage }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+<meta name="twitter:card" content="{{ cond (ne $imageURL "") "summary_large_image" "summary" }}">

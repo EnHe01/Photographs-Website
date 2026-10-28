@@ -1,0 +1,49 @@
+{{- /*
+  Responsive <img> for an uploaded photo.
+
+  Hugo resizes the original (already watermarked) file into WebP versions at
+  several widths, and the browser downloads only the size the layout needs
+  — e.g. a phone loads an 800px image instead of the 2400px original.
+  Resized files get content-hashed names, so they never go stale in caches.
+
+  Usage:
+    {{ partial "img.html" (dict "src" .Params.cover "alt" .Title "sizes" "(max-width: 768px) 100vw, 50vw" "lazy" true) }}
+
+  "sizes" tells the browser how wide the image is displayed (see MDN
+  <img sizes>). Anything that isn't a resizable /uploads/ image falls back
+  to a plain <img> with the cache-busting URL from img-url.html.
+*/ -}}
+{{- $src := .src -}}
+{{- $alt := .alt | default "" -}}
+{{- $sizes := .sizes | default "100vw" -}}
+{{- $loading := cond (.lazy | default false) "lazy" "eager" -}}
+{{- $res := false -}}
+{{- if and $src (hasPrefix $src "/uploads/") (not (strings.Contains $src "?")) -}}
+  {{- with resources.Get (strings.TrimPrefix "/" $src) -}}
+    {{- if in (slice "jpeg" "png" "webp") .MediaType.SubType -}}
+      {{- $res = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $res -}}
+  {{- $orig := $res.Width -}}
+  {{- $widths := slice -}}
+  {{- range slice 480 800 1200 1600 2400 -}}
+    {{- if le . $orig }}{{ $widths = $widths | append . }}{{ end -}}
+  {{- end -}}
+  {{- if not (in $widths $orig) }}{{ if lt $orig 2400 }}{{ $widths = $widths | append $orig }}{{ end }}{{ end -}}
+  {{- $set := slice -}}
+  {{- $fallback := "" -}}
+  {{- $fbW := 0 -}}
+  {{- $fbH := 0 -}}
+  {{- range $widths -}}
+    {{- $r := $res.Resize (printf "%dx webp q80" .) -}}
+    {{- $set = $set | append (printf "%s %dw" $r.RelPermalink .) -}}
+    {{- if or (eq $fallback "") (le . 1200) -}}
+      {{- $fallback = $r.RelPermalink }}{{ $fbW = $r.Width }}{{ $fbH = $r.Height -}}
+    {{- end -}}
+  {{- end -}}
+<img src="{{ $fallback }}" srcset="{{ delimit $set ", " }}" sizes="{{ $sizes }}" width="{{ $fbW }}" height="{{ $fbH }}" alt="{{ $alt }}"{{ with .title }} title="{{ . }}"{{ end }} loading="{{ $loading }}" decoding="async">
+{{- else -}}
+<img src="{{ partialCached "img-url.html" $src $src }}" alt="{{ $alt }}"{{ with .title }} title="{{ . }}"{{ end }} loading="{{ $loading }}">
+{{- end -}}

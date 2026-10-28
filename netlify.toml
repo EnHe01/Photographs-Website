@@ -65,3 +65,40 @@
   to = "/en/"
   status = 302
   force = false
+
+# The Hokkaido post was renamed from its early test name; keep old links working.
+[[redirects]]
+  from = "/zh/blog/2026-06-04-啊伟大/*"
+  to = "/zh/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/zh/blog/2026-06-04-%E5%95%8A%E4%BC%9F%E5%A4%A7/*"
+  to = "/zh/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/en/blog/2026-06-04-啊伟大/*"
+  to = "/en/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/en/blog/2026-06-04-%E5%95%8A%E4%BC%9F%E5%A4%A7/*"
+  to = "/en/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ja/blog/2026-06-04-啊伟大/*"
+  to = "/ja/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ja/blog/2026-06-04-%E5%95%8A%E4%BC%9F%E5%A4%A7/*"
+  to = "/ja/blog/2026-06-04-hokkaido/"
+  status = 301
+  force = true

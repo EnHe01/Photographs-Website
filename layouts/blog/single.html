@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="{{ site.Language.Locale }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ .Title }} · EnHe</title>
+{{ partial "head-meta.html" . }}
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -77,7 +78,7 @@ img {
 </nav>
 
 <section class="post-hero">
-  <img src="{{ partialCached "img-url.html" .Params.cover .Params.cover }}" alt="{{ .Title }}">
+  {{ partial "img.html" (dict "src" .Params.cover "alt" .Title "sizes" "100vw" "lazy" false) }}
   <div class="post-hero-content">
         {{- /* Each location part links to this language's post list, pre-filtered by that tag. The value matches the list page's tag buttons (trimmed, lowercased). */}}
         {{ $blog := printf "/%s/blog/" .Site.Language.Lang }}

@@ -1,8 +1,19 @@
 baseURL: "https://enhephotographs.netlify.app/"
 title: "EnHe"
+enableRobotsTXT: true
 
 defaultContentLanguage: "en"
 defaultContentLanguageInSubdir: true
+
+# Expose static/uploads to Hugo's image processing (resources.Get) so
+# partials/img.html can generate resized WebP versions. The files are still
+# published as-is under /uploads/ by the static mount.
+module:
+  mounts:
+    - source: static
+      target: static
+    - source: static/uploads
+      target: assets/uploads
 
 languages:
   zh:
