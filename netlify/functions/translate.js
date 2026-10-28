@@ -4,6 +4,16 @@ const { requireAuth, requireEnv } = require("./_lib/auth");
 const DEEPL_TARGET = { en: "EN-US", ja: "JA", zh: "ZH" };
 const DEEPL_SOURCE = { en: "EN", ja: "JA", zh: "ZH" };
 
+// DeepL sometimes inserts a space inside Markdown image/link syntax
+// ("! [alt](url)" or "[text] (url)"), which then renders as plain text
+// instead of a photo — this happened to the English Hokkaido post. Put the
+// syntax back together after translating.
+function repairMarkdown(text) {
+  return (text || "")
+    .replace(/\]\s+\((\/|https?:)/g, "]($1")
+    .replace(/!\s+(\[[^\]\n]*\]\()/g, "!$1");
+}
+
 async function deeplTranslate(texts, sourceLang, targetLang) {
   const apiKey = requireEnv("DEEPL_API_KEY");
   const params = new URLSearchParams();
@@ -21,7 +31,7 @@ async function deeplTranslate(texts, sourceLang, targetLang) {
   });
   if (!res.ok) throw new HttpError(res.status, `DeepL request failed: ${await res.text()}`);
   const data = await res.json();
-  return data.translations.map((t) => t.text);
+  return data.translations.map((t) => repairMarkdown(t.text));
 }
 
 exports.handler = async (event) =>
@@ -53,3 +63,5 @@ exports.handler = async (event) =>
     keys.forEach((k, i) => (result[k] = translated[i]));
     return json(200, { fields: result });
   });
+
+exports.repairMarkdown = repairMarkdown;
