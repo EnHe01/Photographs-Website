@@ -1,3 +1,3 @@
-{{- /* Same output as Hugo's default image rendering, but with a cache-busting URL (see partials/img-url.html). */ -}}
-<img src="{{ partialCached "img-url.html" .Destination .Destination }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }}>
+{{- /* Markdown images in post bodies: responsive WebP via partials/img.html. The body column is at most 720px wide. */ -}}
+{{ partial "img.html" (dict "src" .Destination "alt" .Text "title" .Title "sizes" "(max-width: 720px) 100vw, 720px" "lazy" true) }}
 {{- /* */ -}}

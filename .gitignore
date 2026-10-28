@@ -2,3 +2,4 @@ public/
 .hugo_build.lock
 Photographs-Website
 node_modules/
+resources/
