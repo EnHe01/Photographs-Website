@@ -3,6 +3,18 @@ const { HttpError } = require("./response");
 
 const API = "https://api.github.com";
 
+// Every commit the admin makes (save draft, auto-translated languages,
+// image uploads, deletes) is tagged so Netlify does NOT build on the push.
+// Netlify bills each production deploy, and one three-language post used to
+// cost 4+ deploys (one per file commit, plus the publish button's build
+// hook). The site is now built exactly once, when "發布" calls the build
+// hook in publish.js — build hooks ignore this tag.
+const SKIP_DEPLOY_TAG = " [skip netlify]";
+
+function adminCommitMessage(message) {
+  return message.includes(SKIP_DEPLOY_TAG.trim()) ? message : message + SKIP_DEPLOY_TAG;
+}
+
 function config() {
   return {
     repo: requireEnv("GITHUB_REPO"), // "owner/name"
@@ -71,7 +83,7 @@ async function putFile(path, content, message, sha) {
     method: "PUT",
     headers: { ...headers(token), "Content-Type": "application/json" },
     body: JSON.stringify({
-      message,
+      message: adminCommitMessage(message),
       content: contentBase64,
       branch,
       ...(sha ? { sha } : {}),
@@ -87,7 +99,7 @@ async function deleteFile(path, message, sha) {
   const res = await fetch(`${API}/repos/${repo}/contents/${encodePath(path)}`, {
     method: "DELETE",
     headers: { ...headers(token), "Content-Type": "application/json" },
-    body: JSON.stringify({ message, sha, branch }),
+    body: JSON.stringify({ message: adminCommitMessage(message), sha, branch }),
   });
   if (!res.ok) throw new HttpError(res.status, `GitHub deleteFile failed: ${await res.text()}`);
 }
